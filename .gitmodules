@@ -1,0 +1,28 @@
+[submodule "awesome-claude-code"]
+	path = awesome-claude-code
+	url = https://github.com/hesreallyhim/awesome-claude-code
+	branch = main
+[submodule "claude-mem"]
+	path = claude-mem
+	url = https://github.com/thedotmack/claude-mem
+	branch = main
+[submodule "everything-claude-code"]
+	path = everything-claude-code
+	url = https://github.com/affaan-m/everything-claude-code
+	branch = main
+[submodule "get-shit-done"]
+	path = get-shit-done
+	url = https://github.com/gsd-build/get-shit-done
+	branch = main
+[submodule "pm-workspace"]
+	path = pm-workspace
+	url = https://github.com/gonzalezpazmonica/pm-workspace
+	branch = main
+[submodule "superpowers"]
+	path = superpowers
+	url = https://github.com/obra/superpowers
+	branch = main
+[submodule "ui-ux-pro-max-skill"]
+	path = ui-ux-pro-max-skill
+	url = https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+	branch = main
