@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/consensus/gossip-coordinator.md

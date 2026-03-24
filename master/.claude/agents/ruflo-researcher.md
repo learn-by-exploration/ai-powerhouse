@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/core/researcher.md

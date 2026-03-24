@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/templates/sparc-coordinator.md

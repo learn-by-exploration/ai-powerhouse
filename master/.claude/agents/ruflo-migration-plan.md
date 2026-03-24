@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/templates/migration-plan.md

@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/templates/coordinator-swarm-init.md

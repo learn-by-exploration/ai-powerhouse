@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/swarm/hierarchical-coordinator.md

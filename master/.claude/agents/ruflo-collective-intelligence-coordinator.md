@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/hive-mind/collective-intelligence-coordinator.md

@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/templates/github-pr-manager.md

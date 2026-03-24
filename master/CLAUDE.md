@@ -4,7 +4,7 @@ You have access to a curated collection of state-of-the-art Claude Code tools as
 
 ## What's Available
 
-### Agents (47 total)
+### Agents (123 total)
 
 **everything-claude-code agents** (prefix: `ecc-`):
 - `ecc-architect` — System design, layer assignment, architecture decisions
@@ -30,7 +30,7 @@ You have access to a curated collection of state-of-the-art Claude Code tools as
 - `gsd-roadmapper` — Roadmap generation
 - And more specialized research/planning agents
 
-### Skills (151 total)
+### Skills (189 total)
 
 **everything-claude-code skills** (prefix: `ecc-`) — Production-battle-tested:
 - Engineering: `ecc-tdd-workflow`, `ecc-coding-standards`, `ecc-api-design`, `ecc-security-review`
@@ -66,10 +66,31 @@ You have access to a curated collection of state-of-the-art Claude Code tools as
 - `uiux-design` — Design recommendations by product type
 - `uiux-slides` — Presentation design
 
-**ruflo hooks** (prefix: `ruflo-`) — Multi-agent orchestration lifecycle hooks:
-- `ruflo-hooks.json` — Pre/post-tool hooks for edit, bash, session, and notification events (integrates with `npx ruflo` swarm CLI)
+**ruflo agents** (prefix: `ruflo-`) — 76 specialized agents across:
+- Core: `ruflo-coder`, `ruflo-planner`, `ruflo-researcher`, `ruflo-reviewer`, `ruflo-tester`
+- Consensus: `ruflo-raft-manager`, `ruflo-byzantine-coordinator`, `ruflo-crdt-synchronizer`, `ruflo-quorum-manager`
+- Swarm: `ruflo-hierarchical-coordinator`, `ruflo-mesh-coordinator`, `ruflo-adaptive-coordinator`
+- Hive mind: `ruflo-queen-coordinator`, `ruflo-worker-specialist`, `ruflo-scout-explorer`
+- GitHub: `ruflo-pr-manager`, `ruflo-issue-tracker`, `ruflo-release-manager`, `ruflo-workflow-automation`
+- SPARC: `ruflo-specification`, `ruflo-architecture`, `ruflo-refinement`
+- Optimization: `ruflo-load-balancer`, `ruflo-performance-monitor`, `ruflo-topology-optimizer`
 
-### Commands (64 total)
+**ruflo skills** (prefix: `ruflo-`) — 38 skills for multi-agent orchestration:
+- Memory: `ruflo-agentdb-advanced`, `ruflo-agentdb-vector-search`, `ruflo-reasoningbank-agentdb`
+- Swarm: `ruflo-swarm-orchestration`, `ruflo-swarm-advanced`, `ruflo-hive-mind-advanced`, `ruflo-flow-nexus-swarm`
+- Dev: `ruflo-sparc-methodology`, `ruflo-pair-programming`, `ruflo-verification-quality`, `ruflo-agentic-jujutsu`
+- GitHub: `ruflo-github-code-review`, `ruflo-github-workflow-automation`, `ruflo-github-multi-repo`
+- v3 arch: `ruflo-v3-ddd-architecture`, `ruflo-v3-core-implementation`, `ruflo-v3-security-overhaul`
+
+**ruflo hooks** — Pre/post-tool hooks integrating with `npx ruflo` swarm CLI (`ruflo-hooks.json`)
+
+**ruflo commands** (prefix: `ruflo-`):
+- `/ruflo-claude-flow-help` — Help and overview of all ruflo commands
+- `/ruflo-claude-flow-memory` — Memory management (AgentDB store/retrieve)
+- `/ruflo-claude-flow-swarm` — Launch multi-agent swarms
+- `/ruflo-sparc` — SPARC development methodology entry point
+
+### Commands (68 total)
 
 **everything-claude-code** (prefix: `/ecc-`):
 - `/ecc-plan` — Create implementation plans

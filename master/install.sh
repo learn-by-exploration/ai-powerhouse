@@ -128,6 +128,44 @@ done
 
 log "Rules installed."
 
+# ── RUFLO ─────────────────────────────────────────────────────────────────────
+
+log "Installing ruflo skills, agents, and commands..."
+
+# ruflo skills (each is a directory with SKILL.md)
+for d in "$REPO_ROOT/ruflo/plugin/skills/"/*/; do
+  name=$(basename "$d")
+  link "$d" "$CLAUDE_DIR/skills/ruflo-$name"
+done
+
+# ruflo agents (nested dirs — flatten with category prefix for duplicates)
+declare -A _ruflo_seen
+while IFS= read -r f; do
+  base=$(basename "$f" .md)
+  rel="${f#$REPO_ROOT/ruflo/plugin/agents/}"
+  category=$(dirname "$rel" | sed 's|/|-|g')
+  if [[ -n "${_ruflo_seen[$base]+x}" ]]; then
+    link "$f" "$CLAUDE_DIR/agents/ruflo-${category}-${base}.md"
+    prev_rel="${_ruflo_seen[$base]}"
+    prev_cat=$(dirname "$prev_rel" | sed 's|/|-|g')
+    rm -f "$CLAUDE_DIR/agents/ruflo-${base}.md"
+    link "$REPO_ROOT/ruflo/plugin/agents/${prev_rel}" "$CLAUDE_DIR/agents/ruflo-${prev_cat}-${base}.md"
+  else
+    _ruflo_seen[$base]="$rel"
+    link "$f" "$CLAUDE_DIR/agents/ruflo-${base}.md"
+  fi
+done < <(find "$REPO_ROOT/ruflo/plugin/agents/" -name "*.md" | sort)
+unset _ruflo_seen
+
+# ruflo commands (top-level entry-point .md files only)
+for f in "$REPO_ROOT/ruflo/plugin/commands/"*.md; do
+  [[ -f "$f" ]] || continue
+  name=$(basename "$f")
+  link "$f" "$CLAUDE_DIR/commands/ruflo-$name"
+done
+
+log "Ruflo installed."
+
 # ── HOOKS ─────────────────────────────────────────────────────────────────────
 
 log "Installing hooks..."

@@ -1,0 +1,1 @@
+../../../ruflo/plugin/agents/github/repo-architect.md
