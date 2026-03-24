@@ -181,7 +181,18 @@ for f in "$REPO_ROOT/get-shit-done/hooks/"*.js; do
 done
 
 # claude-mem
+# The hooks reference $CLAUDE_PLUGIN_ROOT (set by marketplace) or fall back to
+# ~/.claude/plugins/marketplaces/thedotmack/plugin — create that path so the
+# hooks work even when installed via this script instead of the marketplace.
+mkdir -p "$HOME/.claude/plugins/marketplaces/thedotmack"
+link "$REPO_ROOT/claude-mem/plugin" "$HOME/.claude/plugins/marketplaces/thedotmack/plugin"
 link "$REPO_ROOT/claude-mem/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/mem-hooks.json"
+# Run smart-install to ensure Bun runtime and Python deps are in place
+if ! $DRY_RUN; then
+  log "Setting up claude-mem runtime dependencies (Bun + SQLite)..."
+  node "$REPO_ROOT/claude-mem/plugin/scripts/smart-install.js" 2>/dev/null || \
+    log "⚠️  claude-mem setup failed — install Node.js ≥18 and retry"
+fi
 
 # ruflo
 link "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
