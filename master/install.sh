@@ -128,6 +128,28 @@ done
 
 log "Rules installed."
 
+# ── HOOKS ─────────────────────────────────────────────────────────────────────
+
+log "Installing hooks..."
+
+# everything-claude-code
+link "$REPO_ROOT/everything-claude-code/hooks/hooks.json" "$CLAUDE_DIR/hooks/ecc-hooks.json"
+
+# get-shit-done
+for f in "$REPO_ROOT/get-shit-done/hooks/"*.js; do
+  [[ -f "$f" ]] || continue
+  name=$(basename "$f")
+  link "$f" "$CLAUDE_DIR/hooks/gsd-$name"
+done
+
+# claude-mem
+link "$REPO_ROOT/claude-mem/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/mem-hooks.json"
+
+# ruflo
+link "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
+
+log "Hooks installed."
+
 # ── SUMMARY ──────────────────────────────────────────────────────────────────
 
 if ! $DRY_RUN; then
@@ -138,6 +160,7 @@ if ! $DRY_RUN; then
   echo "  Skills   : $(ls "$CLAUDE_DIR/skills/" | wc -l | tr -d ' ')"
   echo "  Commands : $(ls "$CLAUDE_DIR/commands/" | grep -c '\.md' || true)"
   echo "  Rules    : $(ls "$CLAUDE_DIR/rules/" | wc -l | tr -d ' ')"
+  echo "  Hooks    : $(ls "$CLAUDE_DIR/hooks/" | wc -l | tr -d ' ')"
   echo ""
   echo "Restart Claude Code to pick up all new tools."
 fi

@@ -66,6 +66,9 @@ You have access to a curated collection of state-of-the-art Claude Code tools as
 - `uiux-design` — Design recommendations by product type
 - `uiux-slides` — Presentation design
 
+**ruflo hooks** (prefix: `ruflo-`) — Multi-agent orchestration lifecycle hooks:
+- `ruflo-hooks.json` — Pre/post-tool hooks for edit, bash, session, and notification events (integrates with `npx ruflo` swarm CLI)
+
 ### Commands (64 total)
 
 **everything-claude-code** (prefix: `/ecc-`):

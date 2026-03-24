@@ -75,6 +75,17 @@ A complete software development workflow built on composable skills. Forces spec
 
 ---
 
+### 8. `ruflo`
+**Source:** [ruvnet/ruflo](https://github.com/ruvnet/ruflo)
+
+Enterprise-grade multi-agent AI orchestration platform (formerly claude-flow). Deploys 60+ specialized agents in coordinated swarms with self-learning capabilities, fault-tolerant consensus, and WASM-powered policy/embedding kernels written in Rust. Transforms Claude Code into a full multi-agent development platform with Q-Learning routing, Mixture-of-Experts task dispatch, and AgentDB persistent memory.
+
+**Tech:** TypeScript, Rust/WASM (RuVector kernels), Node.js, SQLite (AgentDB)
+**Scale:** 60+ agents, 42+ skills, 17 hooks, 8 MCP tools, swarm topologies (mesh/hierarchical/ring/star)
+**Notable:** Self-Optimizing Neural Architecture (SONA), Elastic Weight Consolidation (no catastrophic forgetting), multi-provider support (Claude/GPT/Gemini/Ollama), CVE-hardened security (7 protection layers)
+
+---
+
 ### 7. `ui-ux-pro-max-skill`
 **Source:** [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
 
@@ -94,6 +105,7 @@ ai-powerhouse/
 ├── everything-claude-code/    # Production agent optimization framework
 ├── get-shit-done/             # Context-engineering & spec-driven dev
 ├── pm-workspace/              # Full AI PM suite (Savia)
+├── ruflo/                     # Enterprise multi-agent orchestration (60+ agents, WASM kernels)
 ├── superpowers/               # Autonomous spec-to-code workflow
 └── ui-ux-pro-max-skill/       # UI/UX design intelligence toolkit
 ```
