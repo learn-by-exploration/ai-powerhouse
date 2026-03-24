@@ -1,0 +1,1 @@
+../../../everything-claude-code/agents/java-build-resolver.md

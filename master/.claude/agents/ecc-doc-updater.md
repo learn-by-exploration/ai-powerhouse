@@ -1,0 +1,1 @@
+../../../everything-claude-code/agents/doc-updater.md

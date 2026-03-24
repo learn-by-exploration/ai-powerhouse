@@ -1,0 +1,1 @@
+../../../everything-claude-code/commands/go-build.md

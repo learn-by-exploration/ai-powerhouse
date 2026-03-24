@@ -1,0 +1,1 @@
+../../../get-shit-done/agents/gsd-advisor-researcher.md

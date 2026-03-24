@@ -1,0 +1,1 @@
+../../../get-shit-done/hooks/gsd-workflow-guard.js

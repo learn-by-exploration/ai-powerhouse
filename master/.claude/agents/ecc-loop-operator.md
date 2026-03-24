@@ -1,0 +1,1 @@
+../../../everything-claude-code/agents/loop-operator.md
