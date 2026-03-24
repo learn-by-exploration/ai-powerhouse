@@ -1,1 +1,0 @@
-../../../everything-claude-code/agents/chief-of-staff.md

@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/base-template-generator.md

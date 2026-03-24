@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/github/workflow-automation.md

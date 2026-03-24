@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/consensus/raft-manager.md

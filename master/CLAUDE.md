@@ -1,150 +1,122 @@
 # AI Powerhouse — Master Configuration
 
-You have access to a curated collection of state-of-the-art Claude Code tools assembled from the best open-source repos in the ecosystem. Use them proactively.
+You have access to 123 agents, 189 skills, and 68 commands from 8 best-in-class repos.
+**Start here before reading anything else:** invoke the `master-agent-routing` skill.
+
+---
+
+## Start Here: Routing Quick Reference
+
+| You want to... | Use this |
+|---|---|
+| **New feature** (>2h) | `mem-mem-search` → `superpowers-writing-plans` → `superpowers-subagent-driven-development` |
+| **Bug fix** | Write failing test → implement → `ecc-code-reviewer` |
+| **Debug mystery** | `superpowers-systematic-debugging` |
+| **Code review** | `ecc-code-reviewer` (quality) or `ecc-security-reviewer` (security) |
+| **Refactor** | `ecc-refactor-cleaner` |
+| **Architecture** | `ecc-architect` |
+| **UI/UX design** | `uiux-ui-ux-pro-max` or `uiux-design-system` |
+| **Multi-agent / enterprise** | `ruflo-sparc` + `ruflo-swarm-orchestration` |
+| **"Did we build this before?"** | `mem-mem-search` |
+| **Not sure what to use** | `master-agent-routing` skill |
+
+> Full decision tree: `master-agent-routing` skill (loaded automatically).
+
+---
+
+## Unified Philosophy
+
+Five systems are loaded. They agree on the fundamentals:
+
+1. **Memory first** — `mem-mem-search` before writing new code. 10 min of search saves 2 hrs.
+2. **Plan before code** — `superpowers-writing-plans` for features >2h. Never skip.
+3. **TDD always** — Write failing test first, implement to pass. No exceptions.
+4. **80% coverage** — ECC minimum. Superpowers enforces it. Both mandate it.
+5. **Verify before done** — `superpowers-verification-before-completion`. Evidence first.
+6. **Subagents for heavy work** — Keep this session clean; delegate implementation.
+
+### When Rules Conflict: Resolution Order
+
+1. Project-specific `CLAUDE.md` (highest)
+2. Task type (see `master-agent-routing` skill)
+3. Superpowers skills (TDD, verification — non-negotiable)
+4. ECC rules (80% coverage, conventional commits)
+5. Claude-Mem (opportunistic reuse — don't force it)
+
+### Testing: One Unified Strategy
+
+All systems mandate TDD. They're additive, not conflicting:
+
+```
+Before coding:  mem-mem-search      (reuse if found)
+While coding:   TDD                 (red → green → refactor)
+Coverage:       80%+ minimum        (ECC)
+Commits:        feat:/fix:/refactor: (conventional)
+```
+
+---
 
 ## What's Available
 
 ### Agents (123 total)
 
-**everything-claude-code agents** (prefix: `ecc-`):
-- `ecc-architect` — System design, layer assignment, architecture decisions
-- `ecc-code-reviewer` — Deep code quality and security review
-- `ecc-chief-of-staff` — Orchestration and task delegation
-- `ecc-tdd-guide` — Test-driven development guidance
-- `ecc-planner` — Implementation planning
-- `ecc-security-reviewer` — Security audit
-- `ecc-refactor-cleaner` — Code cleanup and refactoring
-- `ecc-build-error-resolver` — Fix build errors (generic, go, rust, java, kotlin, cpp, pytorch)
-- Language reviewers: `ecc-python-reviewer`, `ecc-typescript-reviewer`, `ecc-go-reviewer`, `ecc-rust-reviewer`, `ecc-java-reviewer`, `ecc-kotlin-reviewer`, `ecc-cpp-reviewer`, `ecc-flutter-reviewer`, `ecc-database-reviewer`
+**Core development** (`ecc-` prefix):
+`ecc-architect`, `ecc-code-reviewer`, `ecc-security-reviewer`, `ecc-planner`,
+`ecc-tdd-guide`, `ecc-refactor-cleaner`, `ecc-build-error-resolver`, `ecc-chief-of-staff`
 
-**superpowers agents** (prefix: `superpowers-`):
-- `superpowers-code-reviewer` — Code review with systematic feedback
+Language reviewers: `ecc-python-reviewer`, `ecc-typescript-reviewer`, `ecc-go-reviewer`,
+`ecc-rust-reviewer`, `ecc-java-reviewer`, `ecc-kotlin-reviewer`, `ecc-cpp-reviewer`
 
-**get-shit-done agents** (prefix: `gsd-`):
-- `gsd-planner` — Spec extraction and project planning
-- `gsd-executor` — Implementation execution
-- `gsd-verifier` — Verification and QA
-- `gsd-debugger` — Systematic debugging
-- `gsd-ui-researcher`, `gsd-ui-auditor`, `gsd-ui-checker` — UI research and auditing
-- `gsd-codebase-mapper` — Understand existing codebase
-- `gsd-roadmapper` — Roadmap generation
-- And more specialized research/planning agents
+**Workflow** (`superpowers-`, `gsd-`):
+`superpowers-code-reviewer`, `gsd-planner`, `gsd-executor`, `gsd-verifier`,
+`gsd-debugger`, `gsd-ui-auditor`, `gsd-codebase-mapper`
 
-### Skills (189 total)
-
-**everything-claude-code skills** (prefix: `ecc-`) — Production-battle-tested:
-- Engineering: `ecc-tdd-workflow`, `ecc-coding-standards`, `ecc-api-design`, `ecc-security-review`
-- Architecture: `ecc-architecture-decision-records`, `ecc-backend-patterns`, `ecc-frontend-patterns`
-- Language-specific: `ecc-python-patterns`, `ecc-golang-patterns`, `ecc-rust-patterns`, `ecc-kotlin-patterns`, `ecc-swift*`
-- AI/Agents: `ecc-agentic-engineering`, `ecc-autonomous-loops`, `ecc-agent-eval`, `ecc-continuous-learning`
-- Quality: `ecc-e2e-testing`, `ecc-verification-loop`, `ecc-eval-harness`
-- Context: `ecc-context-budget`, `ecc-deep-research`, `ecc-codebase-onboarding`
-
-**superpowers skills** (prefix: `superpowers-`) — Autonomous workflow:
-- `superpowers-subagent-driven-development` — Launch parallel subagents for implementation
-- `superpowers-test-driven-development` — TDD enforcement
-- `superpowers-writing-plans` — Structured implementation plans
-- `superpowers-executing-plans` — Execute plans step by step
-- `superpowers-systematic-debugging` — Root-cause debugging
-- `superpowers-using-git-worktrees` — Parallel work with worktrees
-- `superpowers-verification-before-completion` — Never mark done without proof
-- `superpowers-dispatching-parallel-agents` — Parallelization patterns
-- `superpowers-receiving-code-review` — How to process review feedback
-
-**claude-mem skills** (prefix: `mem-`) — Memory and planning:
-- `mem-mem-search` — Search past work and context across sessions
-- `mem-make-plan` — Create phased implementation plans
-- `mem-do` — Execute phased plans using subagents
-- `mem-smart-explore` — Smart codebase exploration
-- `mem-timeline-report` — Report on past activity
-
-**ui-ux-pro-max skills** (prefix: `uiux-`) — Design intelligence:
-- `uiux-ui-ux-pro-max` — Full design intelligence (161 rules, 67 styles)
-- `uiux-design-system` — Generate complete design systems
-- `uiux-ui-styling` — Platform-specific styling guidance
-- `uiux-brand` — Brand identity and color systems
-- `uiux-design` — Design recommendations by product type
-- `uiux-slides` — Presentation design
-
-**ruflo agents** (prefix: `ruflo-`) — 76 specialized agents across:
+**Multi-agent orchestration** (`ruflo-` prefix, 76 agents):
 - Core: `ruflo-coder`, `ruflo-planner`, `ruflo-researcher`, `ruflo-reviewer`, `ruflo-tester`
-- Consensus: `ruflo-raft-manager`, `ruflo-byzantine-coordinator`, `ruflo-crdt-synchronizer`, `ruflo-quorum-manager`
+- Consensus: `ruflo-raft-manager`, `ruflo-byzantine-coordinator`, `ruflo-quorum-manager`
 - Swarm: `ruflo-hierarchical-coordinator`, `ruflo-mesh-coordinator`, `ruflo-adaptive-coordinator`
-- Hive mind: `ruflo-queen-coordinator`, `ruflo-worker-specialist`, `ruflo-scout-explorer`
-- GitHub: `ruflo-pr-manager`, `ruflo-issue-tracker`, `ruflo-release-manager`, `ruflo-workflow-automation`
+- GitHub: `ruflo-pr-manager`, `ruflo-issue-tracker`, `ruflo-release-manager`
 - SPARC: `ruflo-specification`, `ruflo-architecture`, `ruflo-refinement`
-- Optimization: `ruflo-load-balancer`, `ruflo-performance-monitor`, `ruflo-topology-optimizer`
 
-**ruflo skills** (prefix: `ruflo-`) — 38 skills for multi-agent orchestration:
-- Memory: `ruflo-agentdb-advanced`, `ruflo-agentdb-vector-search`, `ruflo-reasoningbank-agentdb`
-- Swarm: `ruflo-swarm-orchestration`, `ruflo-swarm-advanced`, `ruflo-hive-mind-advanced`, `ruflo-flow-nexus-swarm`
-- Dev: `ruflo-sparc-methodology`, `ruflo-pair-programming`, `ruflo-verification-quality`, `ruflo-agentic-jujutsu`
-- GitHub: `ruflo-github-code-review`, `ruflo-github-workflow-automation`, `ruflo-github-multi-repo`
-- v3 arch: `ruflo-v3-ddd-architecture`, `ruflo-v3-core-implementation`, `ruflo-v3-security-overhaul`
+### Skills (189 total + master routing skill)
 
-**ruflo hooks** — Pre/post-tool hooks integrating with `npx ruflo` swarm CLI (`ruflo-hooks.json`)
-
-**ruflo commands** (prefix: `ruflo-`):
-- `/ruflo-claude-flow-help` — Help and overview of all ruflo commands
-- `/ruflo-claude-flow-memory` — Memory management (AgentDB store/retrieve)
-- `/ruflo-claude-flow-swarm` — Launch multi-agent swarms
-- `/ruflo-sparc` — SPARC development methodology entry point
+**`ecc-`** — Engineering standards (TDD, API design, patterns, security, language-specific)
+**`superpowers-`** — Autonomous workflow (writing-plans, subagent-driven-development, systematic-debugging, verification-before-completion, dispatching-parallel-agents)
+**`mem-`** — Memory (mem-search, make-plan, do, smart-explore, timeline-report)
+**`uiux-`** — Design (ui-ux-pro-max, design-system, ui-styling, brand, slides)
+**`ruflo-`** — Orchestration (sparc-methodology, swarm-orchestration, agentdb-*, flow-nexus-*, github-*)
+**`master-`** — This harness (agent-routing ← start here)
 
 ### Commands (68 total)
 
-**everything-claude-code** (prefix: `/ecc-`):
-- `/ecc-plan` — Create implementation plans
-- `/ecc-tdd` — Test-driven development workflow
-- `/ecc-code-review` — Run code review
-- `/ecc-build-fix` — Fix build errors
-- `/ecc-e2e` — E2E testing
-- `/ecc-learn` — Extract patterns from sessions
-- `/ecc-skill-create` — Generate skills from git history
-- `/ecc-verify` — Verify implementation
-- `/ecc-checkpoint` — Save session checkpoint
-- `/ecc-context-budget` — Show context usage
+**`/ecc-`**: plan, tdd, code-review, build-fix, e2e, verify, learn, checkpoint, context-budget
+**`/superpowers-`**: write-plan, execute-plan, brainstorm
+**`/gsd-`**: gsd (full spec→plan→build workflow)
+**`/ruflo-`**: claude-flow-help, claude-flow-memory, claude-flow-swarm, sparc
 
-**superpowers** (prefix: `/superpowers-`):
-- `/superpowers-write-plan` — Write an implementation plan
-- `/superpowers-execute-plan` — Execute a plan
-- `/superpowers-brainstorm` — Brainstorm solutions
+---
 
-**get-shit-done** (prefix: `/gsd-`):
-- `/gsd-gsd` — Main GSD workflow (spec → plan → build)
+## Context Budget Awareness
 
-## How to Use
+This harness loads ~120K tokens of rules/agents at session start (60% of a 200K window).
 
-### For a new feature
-1. Use `superpowers-writing-plans` skill to create a solid spec first
-2. Use `ecc-architect` agent to review the architecture
-3. Use `superpowers-subagent-driven-development` or `gsd-executor` to implement
-4. Use `ecc-code-reviewer` agent for review
-5. Use `superpowers-verification-before-completion` before marking done
+**To reduce token overhead:**
+- Re-install with `bash master/install.sh --minimal` (skips language-specific rules, saves ~40K)
+- Check usage: `/ecc-context-budget`
+- When context is high: `ecc-strategic-compact` skill, then delegate to subagents
+- For large codebases: `mem-smart-explore` (cheaper than reading 50 files directly)
 
-### For debugging
-- Use `gsd-debugger` agent for systematic root-cause analysis
-- Use `superpowers-systematic-debugging` skill
+---
 
-### For UI/UX work
-- Use `uiux-ui-ux-pro-max` skill for design decisions
-- Use `uiux-design-system` to generate a complete design system
-- Use `gsd-ui-auditor` agent to audit existing UI
+## Installation & Maintenance
 
-### For memory across sessions
-- Use `mem-mem-search` to recall past work
-- Use `mem-make-plan` for phased planning
-- Use `mem-do` to execute plans with subagents
+```bash
+bash master/install.sh            # install to ~/.claude
+bash master/install.sh --minimal  # core tools only (~40K fewer tokens)
+bash master/install.sh --local    # install to master/.claude (this repo's context)
+bash master/uninstall.sh          # remove everything
 
-### For context management
-- Use `ecc-context-budget` command to check usage
-- Use `ecc-strategic-compact` skill when context is high
-- Use `ecc-continuous-learning` skill to extract patterns
+git submodule update --remote --merge  # update all submodules
+```
 
-## Key Principles (from all sources)
-
-1. **Spec before code** — Never jump to implementation without a clear plan
-2. **Verify before done** — Always prove it works, never assume
-3. **One slice at a time** — Implement in small, testable increments
-4. **TDD** — Write tests first
-5. **Subagents for heavy work** — Delegate to keep context clean
-6. **Memory across sessions** — Use mem-search to avoid repeating work
+Manifest at `~/.claude/POWERHOUSE_MANIFEST.json` tracks what's installed and submodule hashes.

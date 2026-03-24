@@ -1,1 +1,0 @@
-../../../everything-claude-code/agents/kotlin-build-resolver.md

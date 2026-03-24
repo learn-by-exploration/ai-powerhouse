@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/hive-mind/worker-specialist.md

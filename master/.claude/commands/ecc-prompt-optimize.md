@@ -1,1 +1,0 @@
-../../../everything-claude-code/commands/prompt-optimize.md

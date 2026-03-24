@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/specialized/mobile/spec-mobile-react-native.md

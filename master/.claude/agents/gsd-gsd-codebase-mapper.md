@@ -1,1 +1,0 @@
-../../../get-shit-done/agents/gsd-codebase-mapper.md

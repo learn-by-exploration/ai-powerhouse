@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/templates/automation-smart-agent.md

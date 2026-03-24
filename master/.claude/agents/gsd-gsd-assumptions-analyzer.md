@@ -1,1 +1,0 @@
-../../../get-shit-done/agents/gsd-assumptions-analyzer.md

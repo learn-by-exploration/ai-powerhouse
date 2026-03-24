@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/documentation/api-docs/docs-api-openapi.md

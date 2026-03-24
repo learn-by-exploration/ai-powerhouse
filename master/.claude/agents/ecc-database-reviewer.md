@@ -1,1 +1,0 @@
-../../../everything-claude-code/agents/database-reviewer.md

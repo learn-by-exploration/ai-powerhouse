@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/github/multi-repo-swarm.md

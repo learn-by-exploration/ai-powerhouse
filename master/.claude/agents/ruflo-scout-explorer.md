@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/hive-mind/scout-explorer.md

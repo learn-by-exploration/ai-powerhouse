@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/reasoning/goal-planner.md

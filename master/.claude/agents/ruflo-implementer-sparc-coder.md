@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/templates/implementer-sparc-coder.md

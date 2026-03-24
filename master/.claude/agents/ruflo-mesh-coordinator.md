@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/swarm/mesh-coordinator.md

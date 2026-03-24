@@ -1,0 +1,90 @@
+name: Test Installation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Dry-run install
+        run: bash master/install.sh --dry-run
+
+      - name: Full install (minimal)
+        run: bash master/install.sh --minimal
+
+      - name: Verify agent count
+        run: |
+          count=$(ls ~/.claude/agents/*.md 2>/dev/null | wc -l)
+          echo "Installed agents: $count"
+          if (( count < 50 )); then
+            echo "ERROR: Expected ≥50 agents, got $count"
+            exit 1
+          fi
+
+      - name: Verify skill count
+        run: |
+          count=$(ls ~/.claude/skills/ 2>/dev/null | wc -l)
+          echo "Installed skills: $count"
+          if (( count < 50 )); then
+            echo "ERROR: Expected ≥50 skills, got $count"
+            exit 1
+          fi
+
+      - name: Verify all symlinks resolve
+        run: |
+          broken=0
+          for f in ~/.claude/agents/*.md; do
+            [[ -f "$f" ]] || { echo "BROKEN: $f"; ((broken++)); }
+          done
+          for d in ~/.claude/skills/*/; do
+            [[ -d "$d" ]] || { echo "BROKEN: $d"; ((broken++)); }
+          done
+          if (( broken > 0 )); then
+            echo "ERROR: $broken broken symlinks"
+            exit 1
+          fi
+          echo "All symlinks valid ✓"
+
+      - name: Verify manifest written
+        run: |
+          if [[ ! -f ~/.claude/POWERHOUSE_MANIFEST.json ]]; then
+            echo "ERROR: Manifest not written"
+            exit 1
+          fi
+          python3 -c "import json; m=json.load(open('$HOME/.claude/POWERHOUSE_MANIFEST.json')); print('Manifest:', json.dumps(m['counts']))"
+
+      - name: Check for broken hooks
+        run: |
+          for f in ~/.claude/hooks/*.json; do
+            python3 -m json.tool "$f" > /dev/null || { echo "INVALID JSON: $f"; exit 1; }
+          done
+          echo "All hooks are valid JSON ✓"
+
+      - name: Verify ruflo hooks are version-pinned
+        run: |
+          if grep -q 'claude-flow@alpha' ~/.claude/hooks/ruflo-hooks.json 2>/dev/null; then
+            echo "ERROR: ruflo-hooks.json still contains @alpha tag"
+            exit 1
+          fi
+          echo "Ruflo hooks are version-pinned ✓"
+
+      - name: Test uninstall
+        run: |
+          bash master/uninstall.sh
+          if [[ -f ~/.claude/POWERHOUSE_MANIFEST.json ]]; then
+            echo "ERROR: Manifest still exists after uninstall"
+            exit 1
+          fi
+          echo "Uninstall clean ✓"

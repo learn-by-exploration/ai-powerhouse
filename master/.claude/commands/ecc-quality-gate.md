@@ -1,1 +1,0 @@
-../../../everything-claude-code/commands/quality-gate.md

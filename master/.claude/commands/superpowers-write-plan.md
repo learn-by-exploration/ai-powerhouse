@@ -1,1 +1,0 @@
-../../../superpowers/commands/write-plan.md

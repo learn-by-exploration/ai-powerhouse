@@ -1,1 +1,0 @@
-../../../everything-claude-code/commands/resume-session.md

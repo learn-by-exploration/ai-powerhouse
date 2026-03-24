@@ -1,1 +1,0 @@
-../../../ruflo/plugin/agents/sparc/architecture.md

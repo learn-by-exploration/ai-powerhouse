@@ -1,1 +1,0 @@
-../../../everything-claude-code/agents/kotlin-reviewer.md
