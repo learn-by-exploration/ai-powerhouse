@@ -26,3 +26,7 @@
 	path = ui-ux-pro-max-skill
 	url = https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
 	branch = main
+[submodule "ruflo"]
+	path = ruflo
+	url = https://github.com/ruvnet/ruflo.git
+	branch = main
