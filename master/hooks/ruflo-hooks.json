@@ -40,18 +40,6 @@
         ]
       },
       {
-        "matcher": "^(Grep|Glob|Read)$",
-        "description": "Pre-search hook for caching",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npx claude-flow@3.5.0 hooks pre-search --query \"$TOOL_INPUT_pattern\"",
-            "timeout": 2000,
-            "continueOnError": true
-          }
-        ]
-      },
-      {
         "matcher": "^mcp__claude-flow__.*$",
         "description": "Pre-MCP hook for swarm coordination",
         "hooks": [
@@ -97,18 +85,6 @@
             "type": "command",
             "command": "npx claude-flow@3.5.0 hooks post-task --task-id \"$TOOL_RESULT_agent_id\" --success \"$TOOL_SUCCESS\" --analyze-performance",
             "timeout": 5000,
-            "continueOnError": true
-          }
-        ]
-      },
-      {
-        "matcher": "^(Grep|Glob|Read)$",
-        "description": "Post-search hook for caching results",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npx claude-flow@3.5.0 hooks post-search --query \"$TOOL_INPUT_pattern\" --cache-results",
-            "timeout": 2000,
             "continueOnError": true
           }
         ]
@@ -190,7 +166,7 @@
     "PermissionRequest": [
       {
         "matcher": "^mcp__claude-flow__.*$",
-        "description": "Auto-allow claude-flow MCP tools",
+        "description": "Auto-allow claude-flow MCP tools. SECURITY NOTE: This grants blanket approval to all mcp__claude-flow__* tools without per-call review. Only enable when the claude-flow MCP server is explicitly installed and trusted. Remove this block to require manual approval for each tool call.",
         "hooks": [
           {
             "type": "command",

@@ -1,11 +1,11 @@
 # AI Powerhouse — Master Configuration
 
 You have access to 123 agents, 189 skills, and 68 commands from 8 best-in-class repos.
-**Start here before reading anything else:** invoke the `master-agent-routing` skill.
+**First, invoke the `master-agent-routing` skill to select the right tool for your task.**
 
 ---
 
-## Start Here: Routing Quick Reference
+## Routing Quick Reference
 
 | You want to... | Use this |
 |---|---|
@@ -13,14 +13,19 @@ You have access to 123 agents, 189 skills, and 68 commands from 8 best-in-class 
 | **Bug fix** | Write failing test → implement → `ecc-code-reviewer` |
 | **Debug mystery** | `superpowers-systematic-debugging` |
 | **Code review** | `ecc-code-reviewer` (quality) or `ecc-security-reviewer` (security) |
+| **Security review** | `ecc-security-reviewer` (app code) or `ecc-agentshield-scan` (harness config) |
 | **Refactor** | `ecc-refactor-cleaner` |
 | **Architecture** | `ecc-architect` |
 | **UI/UX design** | `uiux-ui-ux-pro-max` or `uiux-design-system` |
-| **Multi-agent / enterprise** | `ruflo-sparc` + `ruflo-swarm-orchestration` |
+| **Multi-agent / enterprise** | `ruflo-sparc-coordinator` + `ruflo-swarm-orchestration` |
 | **"Did we build this before?"** | `mem-mem-search` |
+| **Document something** | `ecc-doc-updater` agent |
+| **Onboard to a new codebase** | `mem-smart-explore` → `ecc-architect` → `gsd-codebase-mapper` |
+| **PR description** | `ruflo-pr-manager` |
+| **Database migration** | `ecc-database-migrations` skill |
 | **Not sure what to use** | `master-agent-routing` skill |
 
-> Full decision tree: `master-agent-routing` skill (loaded automatically).
+> Full decision tree: `master-agent-routing` skill.
 
 ---
 
@@ -56,67 +61,17 @@ Commits:        feat:/fix:/refactor: (conventional)
 
 ---
 
-## What's Available
-
-### Agents (123 total)
-
-**Core development** (`ecc-` prefix):
-`ecc-architect`, `ecc-code-reviewer`, `ecc-security-reviewer`, `ecc-planner`,
-`ecc-tdd-guide`, `ecc-refactor-cleaner`, `ecc-build-error-resolver`, `ecc-chief-of-staff`
-
-Language reviewers: `ecc-python-reviewer`, `ecc-typescript-reviewer`, `ecc-go-reviewer`,
-`ecc-rust-reviewer`, `ecc-java-reviewer`, `ecc-kotlin-reviewer`, `ecc-cpp-reviewer`
-
-**Workflow** (`superpowers-`, `gsd-`):
-`superpowers-code-reviewer`, `gsd-planner`, `gsd-executor`, `gsd-verifier`,
-`gsd-debugger`, `gsd-ui-auditor`, `gsd-codebase-mapper`
-
-**Multi-agent orchestration** (`ruflo-` prefix, 76 agents):
-- Core: `ruflo-coder`, `ruflo-planner`, `ruflo-researcher`, `ruflo-reviewer`, `ruflo-tester`
-- Consensus: `ruflo-raft-manager`, `ruflo-byzantine-coordinator`, `ruflo-quorum-manager`
-- Swarm: `ruflo-hierarchical-coordinator`, `ruflo-mesh-coordinator`, `ruflo-adaptive-coordinator`
-- GitHub: `ruflo-pr-manager`, `ruflo-issue-tracker`, `ruflo-release-manager`
-- SPARC: `ruflo-specification`, `ruflo-architecture`, `ruflo-refinement`
-
-### Skills (189 total + master routing skill)
-
-**`ecc-`** — Engineering standards (TDD, API design, patterns, security, language-specific)
-**`superpowers-`** — Autonomous workflow (writing-plans, subagent-driven-development, systematic-debugging, verification-before-completion, dispatching-parallel-agents)
-**`mem-`** — Memory (mem-search, make-plan, do, smart-explore, timeline-report)
-**`uiux-`** — Design (ui-ux-pro-max, design-system, ui-styling, brand, slides)
-**`ruflo-`** — Orchestration (sparc-methodology, swarm-orchestration, agentdb-*, flow-nexus-*, github-*)
-**`master-`** — This harness (agent-routing ← start here)
-
-### Commands (68 total)
-
-**`/ecc-`**: plan, tdd, code-review, build-fix, e2e, verify, learn, checkpoint, context-budget
-**`/superpowers-`**: write-plan, execute-plan, brainstorm
-**`/gsd-`**: gsd (full spec→plan→build workflow)
-**`/ruflo-`**: claude-flow-help, claude-flow-memory, claude-flow-swarm, sparc
-
----
-
 ## Context Budget Awareness
 
-This harness loads ~120K tokens of rules/agents at session start (60% of a 200K window).
+This harness loads ~80K tokens at session start in minimal mode (~120K with `--full`).
 
 **To reduce token overhead:**
-- Re-install with `bash master/install.sh --minimal` (skips language-specific rules, saves ~40K)
-- Check usage: `/ecc-context-budget`
+- Default install is already minimal — use `bash master/install.sh` (no flags needed)
+- Exclude ruflo enterprise agents: `bash master/install.sh --no-ruflo` (saves ~40-60K)
+- Check current usage: `/ecc-context-budget`
 - When context is high: `ecc-strategic-compact` skill, then delegate to subagents
-- For large codebases: `mem-smart-explore` (cheaper than reading 50 files directly)
+- For large codebases: `mem-smart-explore` (10-18x cheaper than reading files directly)
 
----
-
-## Installation & Maintenance
-
-```bash
-bash master/install.sh            # install to ~/.claude
-bash master/install.sh --minimal  # core tools only (~40K fewer tokens)
-bash master/install.sh --local    # install to master/.claude (this repo's context)
-bash master/uninstall.sh          # remove everything
-
-git submodule update --remote --merge  # update all submodules
-```
-
-Manifest at `~/.claude/POWERHOUSE_MANIFEST.json` tracks what's installed and submodule hashes.
+**MCP dependencies:** `mem-mem-search`, `mem-smart-explore`, and `mem-timeline-report` require
+the claude-mem MCP server entries in `~/.claude/settings.json`. If memory search returns nothing,
+verify the MCP server is registered and running (`bun run start` in `claude-mem/plugin/`).

@@ -2,6 +2,41 @@
 
 ## [Unreleased]
 
+## [0.0.3] — 2026-03-25
+
+### Fixed — Critical bugs
+- `install.sh`: removed `eval` from `action()` helper — replaced with direct quoted `mkdir -p` calls (shell injection risk)
+- `install.sh`: fixed `"${@:-}"` arg-parsing loop → `"$@"` (ran loop body once with empty string when no args given)
+- `install.sh`: fixed `--local` flag for claude-mem marketplace symlink — was unconditionally writing to `$HOME/.claude`, now uses `$CLAUDE_DIR`
+- `install.sh`: removed duplicate manifest-writing block (dead PYEOF that ran with wrong env vars, overwritten by correct PYEOF2)
+- `install.sh`: hash verification heredoc now correctly exports `REPO_ROOT` and `LOCK_FILE` before the inline Python
+- `uninstall.sh`: fixed same `"${@:-}"` arg-parsing bug; uninstall now uses explicit loops instead of `find -delete 2>/dev/null || true` so failures surface
+- `scripts/update-hashes.sh`: fixed heredoc quoting (`<<PYEOF` → `<<'PYEOF'`), passes `REPO_ROOT` via env var instead of shell interpolation into Python source
+- `everything-claude-code/rules/common/agents.md`: agent names updated to match installed `ecc-` prefix (were `planner`, `architect` etc. — broke tool invocations)
+
+### Fixed — Agent name collisions
+- `install.sh`: added name-collision patch step — `superpowers-code-reviewer`, `ruflo-planner`, `ruflo-reasoning-goal-planner`, `ruflo-github-pr-manager` are now installed as real files (not symlinks) with their `name:` field corrected to match the filename prefix
+
+### Added
+- `install.sh --no-ruflo`: excludes all 76 ruflo agents, skills, commands, and hooks (saves ~40-60K context tokens)
+- `install.sh --full`: opt-in to full install including language-specific rules; **default is now `--minimal`**
+- Unrecognized-flag warnings in both `install.sh` and `uninstall.sh`
+- `--dry-run` flag added to `uninstall.sh`
+- `scripts/verify-submodules.sh`: standalone hash-verification script (was referenced in lock file comment but missing)
+- Comment in `install.sh` explaining why `pm-workspace` and `awesome-claude-code` are not installed
+
+### Changed
+- `install.sh`: submodule init guard now checks ALL required submodules (was single-file spot check on one submodule)
+- `install.sh`: `rm -rf` before symlink replaced with `rm -f` (only removes symlinks, warns on real dirs)
+- `install.sh`: default changed to `--minimal`; use `--full` for language-specific rules
+- `install.sh`: `--minimal` token savings claim corrected to `~15-20K` (was inaccurate `~40K`)
+- `master/CLAUDE.md`: removed "What's Available" section (~600 tokens/session, redundant with Tool manifest); removed "Installation & Maintenance" block (developer docs, not model context); added MCP dependency note; added missing routing rows (docs, onboarding, PR, migrations, security scan)
+- `master/hooks/ruflo-hooks.json`: removed `pre-search`/`post-search` hooks on `Grep|Glob|Read` (was adding 2-4s latency to every file read); added security note to `PermissionRequest` auto-allow block
+- `.github/workflows/test-install.yml`: added `macos-latest` matrix; dry-run now asserts no files written; uninstall test now checks agents/skills removed (not just manifest); added idempotency test; added `--no-ruflo` test; added `verify-submodules.sh` step
+
+### Security
+- `master/hooks/ruflo-hooks.json`: `PermissionRequest` auto-allow now has explicit documentation warning about the blanket approval scope
+
 ## [0.0.2] — 2026-03-24
 
 ### Added

@@ -5,10 +5,10 @@
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-python3 - <<PYEOF
+REPO_ROOT="$REPO_ROOT" python3 - <<'PYEOF'
 import json, subprocess, datetime, os
 
-repo = "$REPO_ROOT"
+repo = os.environ['REPO_ROOT']
 lock_file = os.path.join(repo, 'submodule-hashes.lock')
 
 submodules = ['awesome-claude-code','claude-mem','everything-claude-code',

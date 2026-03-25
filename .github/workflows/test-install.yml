@@ -8,7 +8,10 @@ on:
 
 jobs:
   test-install:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,11 +21,22 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Dry-run install
-        run: bash master/install.sh --dry-run
+      # ── Dry-run: must not write any files to ~/.claude ──────────────────────
+      - name: Dry-run install (verify no files written)
+        run: |
+          before=$(find ~/.claude -maxdepth 4 2>/dev/null | sort || true)
+          bash master/install.sh --dry-run
+          after=$(find ~/.claude -maxdepth 4 2>/dev/null | sort || true)
+          if [[ "$before" != "$after" ]]; then
+            echo "ERROR: --dry-run wrote files to ~/.claude"
+            diff <(echo "$before") <(echo "$after") || true
+            exit 1
+          fi
+          echo "Dry-run wrote no files ✓"
 
-      - name: Full install (minimal)
-        run: bash master/install.sh --minimal
+      # ── Full install (minimal, default) ─────────────────────────────────────
+      - name: Install (minimal, default)
+        run: bash master/install.sh
 
       - name: Verify agent count
         run: |
@@ -42,7 +56,7 @@ jobs:
             exit 1
           fi
 
-      - name: Verify all symlinks resolve
+      - name: Verify all symlinks/files resolve
         run: |
           broken=0
           for f in ~/.claude/agents/*.md; do
@@ -52,10 +66,20 @@ jobs:
             [[ -d "$d" ]] || { echo "BROKEN: $d"; ((broken++)); }
           done
           if (( broken > 0 )); then
-            echo "ERROR: $broken broken symlinks"
+            echo "ERROR: $broken broken paths"
             exit 1
           fi
-          echo "All symlinks valid ✓"
+          echo "All agent/skill paths valid ✓"
+
+      - name: Verify no agent name collisions
+        run: |
+          dupes=$(grep -h "^name:" ~/.claude/agents/*.md 2>/dev/null | sort | uniq -d)
+          if [[ -n "$dupes" ]]; then
+            echo "ERROR: Duplicate agent name: fields found:"
+            echo "$dupes"
+            exit 1
+          fi
+          echo "No agent name collisions ✓"
 
       - name: Verify manifest written
         run: |
@@ -63,28 +87,92 @@ jobs:
             echo "ERROR: Manifest not written"
             exit 1
           fi
-          python3 -c "import json; m=json.load(open('$HOME/.claude/POWERHOUSE_MANIFEST.json')); print('Manifest:', json.dumps(m['counts']))"
+          python3 -c "import json; m=json.load(open('$HOME/.claude/POWERHOUSE_MANIFEST.json')); print('Manifest counts:', json.dumps(m['counts']))"
 
-      - name: Check for broken hooks
+      - name: Validate all hook JSON files
         run: |
-          for f in ~/.claude/hooks/*.json; do
-            python3 -m json.tool "$f" > /dev/null || { echo "INVALID JSON: $f"; exit 1; }
-          done
-          echo "All hooks are valid JSON ✓"
+          python3 - <<'PYEOF'
+          import json, glob, sys
+          failed = []
+          for f in glob.glob(f"{__import__('os').environ['HOME']}/.claude/hooks/*.json"):
+              try: json.load(open(f))
+              except Exception as e: failed.append(f"{f}: {e}")
+          if failed:
+              print("INVALID JSON hooks:")
+              for e in failed: print(" ", e)
+              sys.exit(1)
+          print(f"All {len(glob.glob(f'{__import__(\"os\").environ[\"HOME\"]}/.claude/hooks/*.json'))} hook files are valid JSON ✓")
+          PYEOF
 
       - name: Verify ruflo hooks are version-pinned
         run: |
-          if grep -q 'claude-flow@alpha' ~/.claude/hooks/ruflo-hooks.json 2>/dev/null; then
-            echo "ERROR: ruflo-hooks.json still contains @alpha tag"
+          if [[ -f ~/.claude/hooks/ruflo-hooks.json ]]; then
+            if grep -q 'claude-flow@alpha' ~/.claude/hooks/ruflo-hooks.json; then
+              echo "ERROR: ruflo-hooks.json contains @alpha tag"
+              exit 1
+            fi
+            echo "Ruflo hooks are version-pinned ✓"
+          else
+            echo "Ruflo hooks not installed (--no-ruflo mode) — skipping ✓"
+          fi
+
+      # ── Idempotency: second install must succeed and produce identical result ─
+      - name: Idempotency: run install twice
+        run: |
+          snap1=$(find ~/.claude -maxdepth 4 -not -name "POWERHOUSE_MANIFEST.json" 2>/dev/null | sort)
+          bash master/install.sh
+          snap2=$(find ~/.claude -maxdepth 4 -not -name "POWERHOUSE_MANIFEST.json" 2>/dev/null | sort)
+          if [[ "$snap1" != "$snap2" ]]; then
+            echo "ERROR: Second install changed ~/.claude state:"
+            diff <(echo "$snap1") <(echo "$snap2") || true
             exit 1
           fi
-          echo "Ruflo hooks are version-pinned ✓"
+          echo "Idempotent ✓"
 
-      - name: Test uninstall
+      # ── Uninstall: verify symlinks actually removed, not just manifest ────────
+      - name: Uninstall
+        run: bash master/uninstall.sh
+
+      - name: Verify uninstall cleaned up agents
         run: |
-          bash master/uninstall.sh
+          remaining=$(ls ~/.claude/agents/ 2>/dev/null | grep -E '^(ecc|gsd|superpowers|ruflo|mem|uiux|master)-' || true)
+          if [[ -n "$remaining" ]]; then
+            echo "ERROR: Agents not removed after uninstall:"
+            echo "$remaining"
+            exit 1
+          fi
+          echo "Agents removed ✓"
+
+      - name: Verify uninstall cleaned up skills
+        run: |
+          remaining=$(ls ~/.claude/skills/ 2>/dev/null | grep -E '^(ecc|gsd|superpowers|ruflo|mem|uiux|master)-' || true)
+          if [[ -n "$remaining" ]]; then
+            echo "ERROR: Skills not removed after uninstall:"
+            echo "$remaining"
+            exit 1
+          fi
+          echo "Skills removed ✓"
+
+      - name: Verify manifest removed
+        run: |
           if [[ -f ~/.claude/POWERHOUSE_MANIFEST.json ]]; then
             echo "ERROR: Manifest still exists after uninstall"
             exit 1
           fi
-          echo "Uninstall clean ✓"
+          echo "Manifest removed ✓"
+
+      # ── --no-ruflo install mode ───────────────────────────────────────────────
+      - name: Test --no-ruflo install
+        run: |
+          bash master/install.sh --no-ruflo
+          ruflo_agents=$(ls ~/.claude/agents/ruflo-*.md 2>/dev/null | wc -l || echo 0)
+          if (( ruflo_agents > 0 )); then
+            echo "ERROR: --no-ruflo still installed $ruflo_agents ruflo agents"
+            exit 1
+          fi
+          echo "--no-ruflo mode works ✓"
+          bash master/uninstall.sh
+
+      # ── Hash verification script ──────────────────────────────────────────────
+      - name: Verify submodule hash script works
+        run: bash scripts/verify-submodules.sh --warn-only

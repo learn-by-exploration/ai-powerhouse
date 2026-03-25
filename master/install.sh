@@ -3,10 +3,11 @@
 # Installs all tools into ~/.claude (or --local for repo-local master/.claude)
 #
 # Usage:
-#   bash install.sh           # install to ~/.claude
-#   bash install.sh --local   # install to master/.claude (repo-local)
-#   bash install.sh --dry-run # preview only
-#   bash install.sh --minimal # core tools only (no language rules)
+#   bash install.sh              # install to ~/.claude (default: minimal)
+#   bash install.sh --full       # install all language rules + ruflo
+#   bash install.sh --no-ruflo   # exclude ruflo agents/skills/hooks
+#   bash install.sh --local      # install to master/.claude (repo-local)
+#   bash install.sh --dry-run    # preview only (no changes made)
 
 set -euo pipefail
 
@@ -16,13 +17,19 @@ VERSION="$(git -C "$REPO_ROOT" describe --tags --always 2>/dev/null || echo 'dev
 
 DRY_RUN=false
 LOCAL=false
-MINIMAL=false
+MINIMAL=true    # default ON — full install requires --full
+NO_RUFLO=false
 
-for arg in "${@:-}"; do
+for arg in "$@"; do
   case "$arg" in
-    --dry-run) DRY_RUN=true ;;
-    --local)   LOCAL=true ;;
-    --minimal) MINIMAL=true ;;
+    --dry-run)  DRY_RUN=true ;;
+    --local)    LOCAL=true ;;
+    --minimal)  MINIMAL=true ;;   # kept for backwards compat
+    --full)     MINIMAL=false ;;
+    --no-ruflo) NO_RUFLO=true ;;
+    --*)
+      echo "[install] WARNING: Unknown flag '$arg' — ignored." >&2
+      ;;
   esac
 done
 
@@ -32,22 +39,39 @@ else
   CLAUDE_DIR="$HOME/.claude"
 fi
 
-log()    { echo "[install] $*"; }
-warn()   { echo "[install] ⚠️  $*"; }
-action() { $DRY_RUN && echo "[dry-run] $*" || eval "$*"; }
+log()  { echo "[install] $*"; }
+warn() { echo "[install] ⚠️  $*" >&2; }
 
 # ── Pre-flight checks ────────────────────────────────────────────────────────
 
 log "AI Powerhouse $VERSION"
 
-# Check submodules are initialized
-if [[ ! -f "$REPO_ROOT/everything-claude-code/agents/architect.md" ]]; then
+# NOTE: pm-workspace and awesome-claude-code are tracked as submodules (for reference/browsing)
+# but are NOT installed by this script. pm-workspace has an incompatible directory structure
+# (496 commands directly in root rather than commands/ subdir) and awesome-claude-code is a
+# curated Awesome List with no installable agents or skills.
+# See: https://github.com/gonzalezpazmonica/pm-workspace (pm-workspace)
+#      https://github.com/hesreallyhim/awesome-claude-code (awesome-claude-code)
+
+# Check all required submodules are initialized
+_required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill)
+if ! $NO_RUFLO; then
+  _required_subs+=(ruflo)
+fi
+_missing=()
+for _sm in "${_required_subs[@]}"; do
+  if [[ ! -d "$REPO_ROOT/$_sm" ]] || [[ -z "$(ls -A "$REPO_ROOT/$_sm" 2>/dev/null)" ]]; then
+    _missing+=("$_sm")
+  fi
+done
+if (( ${#_missing[@]} > 0 )); then
   echo ""
-  echo "ERROR: Submodules not initialized. Run:"
-  echo "  git submodule update --init --recursive"
+  echo "ERROR: Submodules not initialized: ${_missing[*]}"
+  echo "  Run: git submodule update --init --recursive"
   echo ""
   exit 1
 fi
+unset _required_subs _missing _sm
 
 # Check Node.js ≥18
 if ! command -v node &>/dev/null; then
@@ -59,8 +83,10 @@ if ! command -v node &>/dev/null; then
   exit 1
 fi
 
-node_major=$(node -e 'process.stdout.write(process.version.split(".")[0].replace("v",""))')
-if (( node_major < 18 )); then
+node_major=$(node -e 'process.stdout.write(process.version.split(".")[0].replace("v",""))' 2>/dev/null || echo "0")
+if ! [[ "$node_major" =~ ^[0-9]+$ ]]; then
+  warn "Could not determine Node.js version — skipping version check."
+elif (( node_major < 18 )); then
   echo "ERROR: Node.js ≥18 required (found $(node -v))"
   exit 1
 fi
@@ -76,16 +102,22 @@ fi
 LOCK_FILE="$REPO_ROOT/submodule-hashes.lock"
 if [[ -f "$LOCK_FILE" ]] && command -v python3 &>/dev/null; then
   log "Verifying submodule integrity..."
-  python3 - <<'PYEOF'
+  LOCK_FILE="$LOCK_FILE" REPO_ROOT="$REPO_ROOT" python3 - <<'PYEOF'
 import json, subprocess, sys, os
-lock = json.load(open(os.environ.get('LOCK_FILE', 'submodule-hashes.lock')))
-repo = os.environ.get('REPO_ROOT', '.')
+lock_path = os.environ['LOCK_FILE']
+repo      = os.environ['REPO_ROOT']
+try:
+    lock = json.load(open(lock_path))
+except Exception as e:
+    print(f"[install] WARNING: Could not read lock file: {e}", file=sys.stderr)
+    sys.exit(0)
 warnings = []
 for name, expected in lock.items():
     if name.startswith('_'): continue
     path = os.path.join(repo, name)
     if not os.path.isdir(path): continue
-    actual = subprocess.run(['git','-C',path,'rev-parse','HEAD'], capture_output=True, text=True).stdout.strip()
+    r = subprocess.run(['git','-C',path,'rev-parse','HEAD'], capture_output=True, text=True)
+    actual = r.stdout.strip()
     if actual and actual != expected:
         warnings.append(f"  {name}: expected {expected[:12]}, got {actual[:12]}")
 if warnings:
@@ -98,7 +130,11 @@ fi
 # ── Ensure target directories exist ─────────────────────────────────────────
 
 for dir in agents skills commands hooks rules; do
-  action "mkdir -p '$CLAUDE_DIR/$dir'"
+  if $DRY_RUN; then
+    echo "[dry-run] mkdir -p '$CLAUDE_DIR/$dir'"
+  else
+    mkdir -p "$CLAUDE_DIR/$dir"
+  fi
 done
 
 # ── Helper: symlink with absolute source path ────────────────────────────────
@@ -112,7 +148,12 @@ link() {
     return
   fi
   if [[ -e "$dst" || -L "$dst" ]]; then
-    rm -rf "$dst"
+    if [[ -L "$dst" ]]; then
+      rm -f "$dst"
+    else
+      warn "Skipping '$dst' — exists as a real file/dir (not a symlink). Remove manually to reinstall."
+      return
+    fi
   fi
   ln -sf "$src" "$dst"
 }
@@ -139,26 +180,28 @@ for f in "$REPO_ROOT/get-shit-done/agents/"*.md; do
   link "$f" "$CLAUDE_DIR/agents/gsd-$(basename "$f")"
 done
 
-# ruflo (nested dirs — flatten, prefix category on duplicate names)
-declare -A _ruflo_seen
-while IFS= read -r f; do
-  [[ -f "$f" ]] || continue
-  base=$(basename "$f" .md)
-  rel="${f#$REPO_ROOT/ruflo/plugin/agents/}"
-  category=$(dirname "$rel" | sed 's|/|-|g')
-  if [[ -n "${_ruflo_seen[$base]+x}" ]]; then
-    link "$f" "$CLAUDE_DIR/agents/ruflo-${category}-${base}.md"
-    prev_rel="${_ruflo_seen[$base]}"
-    prev_cat=$(dirname "$prev_rel" | sed 's|/|-|g')
-    rm -f "$CLAUDE_DIR/agents/ruflo-${base}.md"
-    link "$REPO_ROOT/ruflo/plugin/agents/${prev_rel}" \
-         "$CLAUDE_DIR/agents/ruflo-${prev_cat}-${base}.md"
-  else
-    _ruflo_seen[$base]="$rel"
-    link "$f" "$CLAUDE_DIR/agents/ruflo-${base}.md"
-  fi
-done < <(find "$REPO_ROOT/ruflo/plugin/agents/" -name "*.md" | sort)
-unset _ruflo_seen
+# ruflo (nested dirs — flatten, prefix category on duplicate basenames)
+if ! $NO_RUFLO && [[ -d "$REPO_ROOT/ruflo/plugin/agents/" ]]; then
+  declare -A _ruflo_seen
+  while IFS= read -r f; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f" .md)
+    rel="${f#$REPO_ROOT/ruflo/plugin/agents/}"
+    category=$(dirname "$rel" | sed 's|/|-|g')
+    if [[ -n "${_ruflo_seen[$base]+x}" ]]; then
+      link "$f" "$CLAUDE_DIR/agents/ruflo-${category}-${base}.md"
+      prev_rel="${_ruflo_seen[$base]}"
+      prev_cat=$(dirname "$prev_rel" | sed 's|/|-|g')
+      rm -f "$CLAUDE_DIR/agents/ruflo-${base}.md"
+      link "$REPO_ROOT/ruflo/plugin/agents/${prev_rel}" \
+           "$CLAUDE_DIR/agents/ruflo-${prev_cat}-${base}.md"
+    else
+      _ruflo_seen[$base]="$rel"
+      link "$f" "$CLAUDE_DIR/agents/ruflo-${base}.md"
+    fi
+  done < <(find "$REPO_ROOT/ruflo/plugin/agents/" -name "*.md" 2>/dev/null | sort)
+  unset _ruflo_seen
+fi
 
 log "Agents installed."
 
@@ -191,10 +234,12 @@ for d in "$REPO_ROOT/ui-ux-pro-max-skill/.claude/skills/"/*/; do
 done
 
 # ruflo
-for d in "$REPO_ROOT/ruflo/plugin/skills/"/*/; do
-  [[ -d "$d" ]] || continue
-  link "$d" "$CLAUDE_DIR/skills/ruflo-$(basename "$d")"
-done
+if ! $NO_RUFLO; then
+  for d in "$REPO_ROOT/ruflo/plugin/skills/"/*/; do
+    [[ -d "$d" ]] || continue
+    link "$d" "$CLAUDE_DIR/skills/ruflo-$(basename "$d")"
+  done
+fi
 
 # master (local skills: agent-routing etc.)
 if [[ -d "$SCRIPT_DIR/skills" ]]; then
@@ -229,10 +274,12 @@ for f in "$REPO_ROOT/get-shit-done/commands/"*.md; do
 done
 
 # ruflo (top-level entry points only)
-for f in "$REPO_ROOT/ruflo/plugin/commands/"*.md; do
-  [[ -f "$f" ]] || continue
-  link "$f" "$CLAUDE_DIR/commands/ruflo-$(basename "$f")"
-done
+if ! $NO_RUFLO; then
+  for f in "$REPO_ROOT/ruflo/plugin/commands/"*.md; do
+    [[ -f "$f" ]] || continue
+    link "$f" "$CLAUDE_DIR/commands/ruflo-$(basename "$f")"
+  done
+fi
 
 log "Commands installed."
 
@@ -245,7 +292,7 @@ if [[ -d "$REPO_ROOT/everything-claude-code/rules/common" ]]; then
   link "$REPO_ROOT/everything-claude-code/rules/common" "$CLAUDE_DIR/rules/ecc-common"
 fi
 
-# Language-specific rules: only in full install (not --minimal)
+# Language-specific rules: only in full install (not --minimal, default is minimal)
 if ! $MINIMAL; then
   for d in "$REPO_ROOT/everything-claude-code/rules/"/*/; do
     name=$(basename "$d")
@@ -254,7 +301,7 @@ if ! $MINIMAL; then
   done
 fi
 
-log "Rules installed$(if $MINIMAL; then echo ' (minimal — language rules skipped)'; fi)."
+log "Rules installed$(if $MINIMAL; then echo ' (minimal — language rules skipped, use --full to include)'; fi)."
 
 # ── HOOKS ────────────────────────────────────────────────────────────────────
 
@@ -270,16 +317,15 @@ for f in "$REPO_ROOT/get-shit-done/hooks/"*.js; do
   link "$f" "$CLAUDE_DIR/hooks/gsd-$(basename "$f")"
 done
 
-# claude-mem
-# Create marketplace symlink so claude-mem hooks find their scripts
+# claude-mem — marketplace symlink must use $CLAUDE_DIR (respects --local mode)
 if ! $DRY_RUN; then
-  mkdir -p "$HOME/.claude/plugins/marketplaces/thedotmack"
-  if [[ -e "$HOME/.claude/plugins/marketplaces/thedotmack/plugin" || \
-        -L "$HOME/.claude/plugins/marketplaces/thedotmack/plugin" ]]; then
-    rm -rf "$HOME/.claude/plugins/marketplaces/thedotmack/plugin"
+  mkdir -p "$CLAUDE_DIR/plugins/marketplaces/thedotmack"
+  if [[ -e "$CLAUDE_DIR/plugins/marketplaces/thedotmack/plugin" || \
+        -L "$CLAUDE_DIR/plugins/marketplaces/thedotmack/plugin" ]]; then
+    rm -f "$CLAUDE_DIR/plugins/marketplaces/thedotmack/plugin"
   fi
   ln -sf "$REPO_ROOT/claude-mem/plugin" \
-         "$HOME/.claude/plugins/marketplaces/thedotmack/plugin"
+         "$CLAUDE_DIR/plugins/marketplaces/thedotmack/plugin"
 fi
 link "$REPO_ROOT/claude-mem/plugin/hooks/hooks.json" \
      "$CLAUDE_DIR/hooks/mem-hooks.json"
@@ -290,56 +336,52 @@ if ! $DRY_RUN && command -v bun &>/dev/null; then
     || warn "claude-mem setup failed — memory hooks may not work"
 fi
 
-# ruflo — use version-pinned copy (not @alpha)
-link "$SCRIPT_DIR/hooks/ruflo-hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
+# ruflo — use version-pinned copy (not @alpha); requires claude-flow MCP server
+if ! $NO_RUFLO; then
+  link "$SCRIPT_DIR/hooks/ruflo-hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
+fi
 
 log "Hooks installed."
+
+# ── FIX AGENT NAME COLLISIONS ────────────────────────────────────────────────
+# Agent `name:` frontmatter must be unique — patched files replace symlinks
+# so each agent gets its own invocation name matching its filename prefix.
+
+if ! $DRY_RUN; then
+  log "Patching agent name collisions..."
+  _patch_name() {
+    local file="$1" old_name="$2" new_name="$3"
+    if [[ -L "$file" ]]; then
+      local src
+      src=$(readlink "$file")
+      sed "s/^name: ${old_name}$/name: ${new_name}/" "$src" > "${file}.tmp"
+      mv "${file}.tmp" "$file"
+    fi
+  }
+  # superpowers-code-reviewer shadows ecc-code-reviewer
+  _patch_name "$CLAUDE_DIR/agents/superpowers-code-reviewer.md" "code-reviewer" "superpowers-code-reviewer"
+  # ruflo-planner shadows ecc-planner
+  _patch_name "$CLAUDE_DIR/agents/ruflo-planner.md" "planner" "ruflo-planner" 2>/dev/null || true
+  # ruflo goal-planner duplicates
+  _patch_name "$CLAUDE_DIR/agents/ruflo-reasoning-goal-planner.md" "goal-planner" "ruflo-reasoning-goal-planner" 2>/dev/null || true
+  # ruflo-github-pr-manager shadows ruflo-pr-manager
+  _patch_name "$CLAUDE_DIR/agents/ruflo-github-pr-manager.md" "pr-manager" "ruflo-github-pr-manager" 2>/dev/null || true
+  unset -f _patch_name
+fi
 
 # ── WRITE MANIFEST ───────────────────────────────────────────────────────────
 
 if ! $DRY_RUN; then
-  python3 - <<PYEOF
-import json, subprocess, datetime, os
-
-repo = os.environ.get('REPO_ROOT', '.')
-claude_dir = os.environ.get('CLAUDE_DIR', os.path.expanduser('~/.claude'))
-
-def sha(path):
-    r = subprocess.run(['git','-C',path,'rev-parse','HEAD'], capture_output=True, text=True)
-    return r.stdout.strip() or 'unknown'
-
-submodules = ['awesome-claude-code','claude-mem','everything-claude-code',
-              'get-shit-done','pm-workspace','ruflo','superpowers','ui-ux-pro-max-skill']
-
-manifest = {
-    'version': os.environ.get('VERSION', 'dev'),
-    'installed_at': datetime.datetime.utcnow().isoformat() + 'Z',
-    'install_mode': 'local' if os.environ.get('LOCAL') == 'true' else 'global',
-    'minimal': os.environ.get('MINIMAL') == 'true',
-    'agents': len([f for f in os.listdir(os.path.join(claude_dir,'agents')) if f.endswith('.md')]),
-    'skills': len(os.listdir(os.path.join(claude_dir,'skills'))),
-    'commands': len([f for f in os.listdir(os.path.join(claude_dir,'commands')) if f.endswith('.md')]),
-    'rules': len(os.listdir(os.path.join(claude_dir,'rules'))),
-    'submodule_hashes': {m: sha(os.path.join(repo, m)) for m in submodules if os.path.isdir(os.path.join(repo,m))}
-}
-
-out = os.path.join(claude_dir, 'POWERHOUSE_MANIFEST.json')
-json.dump(manifest, open(out,'w'), indent=2)
-print(f'[install] Manifest written to {out}')
-PYEOF
   REPO_ROOT="$REPO_ROOT" CLAUDE_DIR="$CLAUDE_DIR" VERSION="$VERSION" \
-  LOCAL="$LOCAL" MINIMAL="$MINIMAL" python3 - <<'PYEOF2'
+  LOCAL="$LOCAL" MINIMAL="$MINIMAL" NO_RUFLO="$NO_RUFLO" python3 - <<'PYEOF'
 import json, subprocess, datetime, os
 
-repo = os.environ['REPO_ROOT']
+repo      = os.environ['REPO_ROOT']
 claude_dir = os.environ['CLAUDE_DIR']
 
 def sha(path):
     r = subprocess.run(['git','-C',path,'rev-parse','HEAD'], capture_output=True, text=True)
     return r.stdout.strip() or 'unknown'
-
-submodules = ['awesome-claude-code','claude-mem','everything-claude-code',
-              'get-shit-done','pm-workspace','ruflo','superpowers','ui-ux-pro-max-skill']
 
 def count_dir(d, ext=None):
     try:
@@ -347,11 +389,15 @@ def count_dir(d, ext=None):
         return len([f for f in files if (not ext or f.endswith(ext))]) if files else 0
     except: return 0
 
+submodules = ['awesome-claude-code','claude-mem','everything-claude-code',
+              'get-shit-done','pm-workspace','ruflo','superpowers','ui-ux-pro-max-skill']
+
 manifest = {
     'version': os.environ.get('VERSION','dev'),
     'installed_at': datetime.datetime.utcnow().isoformat() + 'Z',
     'install_mode': 'local' if os.environ.get('LOCAL')=='true' else 'global',
     'minimal': os.environ.get('MINIMAL')=='true',
+    'no_ruflo': os.environ.get('NO_RUFLO')=='true',
     'counts': {
         'agents':   count_dir(os.path.join(claude_dir,'agents'), '.md'),
         'skills':   count_dir(os.path.join(claude_dir,'skills')),
@@ -365,7 +411,7 @@ manifest = {
 out = os.path.join(claude_dir,'POWERHOUSE_MANIFEST.json')
 with open(out,'w') as f: json.dump(manifest, f, indent=2)
 print(f'[install] Manifest written → {out}')
-PYEOF2
+PYEOF
 fi
 
 # ── SUMMARY ──────────────────────────────────────────────────────────────────
@@ -382,8 +428,11 @@ if ! $DRY_RUN; then
   echo ""
   if $MINIMAL; then
     echo "  (Minimal install — language-specific rules skipped)"
-    echo "  Re-run without --minimal to add Python/Go/Rust/etc. rules"
-    echo ""
+    echo "  Re-run with --full to add Python/Go/Rust/etc. rules (~15-20K more tokens)"
   fi
+  if $NO_RUFLO; then
+    echo "  (--no-ruflo — 76 ruflo agents/skills excluded)"
+  fi
+  echo ""
   echo "Restart Claude Code to pick up all new tools."
 fi
