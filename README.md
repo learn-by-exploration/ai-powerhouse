@@ -1,6 +1,6 @@
 # AI Powerhouse — 325+ Agents, 338+ Skills & 198+ Commands for Claude Code
 
-> Install the entire Claude Code community ecosystem in a single script. One command. Zero configuration.
+> Install the entire Claude Code community ecosystem in a single script. One command. Optional MCP setup for memory features.
 
 [![GitHub Stars](https://img.shields.io/github/stars/learn-by-exploration/ai-powerhouse?style=flat-square&logo=github&label=Stars)](https://github.com/learn-by-exploration/ai-powerhouse/stargazers)
 [![Last Commit](https://img.shields.io/github/last-commit/learn-by-exploration/ai-powerhouse?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse/commits)
@@ -9,12 +9,22 @@
 [![Skills](https://img.shields.io/badge/Skills-338%2B-blue?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
 [![Commands](https://img.shields.io/badge/Commands-198%2B-green?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-orange?style=flat-square)](https://claude.ai/code)
-[![Community Stars](https://img.shields.io/badge/Community-81k%2B%20★-yellow?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
+[![Source Repo Stars](https://img.shields.io/badge/Source%20Repos-680k%2B%20★-yellow?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse#the-12-source-repos)
 
-**AI Powerhouse** is a curated meta-collection of 12 Claude Code submodules — sourced from the highest-starred community repos and installed in one script. Stop spending hours reading READMEs. Get every production-ready agent, skill, and command the community has built, working in your `~/.claude` in 60 seconds.
+<!-- TODO: Add terminal recording showing install + first skill invocation (~45s).
+     Suggested tool: https://github.com/charmbracelet/vhs or asciinema.
+     Place at: docs/assets/install-demo.gif
+     ![Install demo](docs/assets/install-demo.gif) -->
+
+**AI Powerhouse** is a curated meta-collection of 12 Claude Code submodules — sourced from the highest-starred community repos and installed in one script. Stop spending hours reading READMEs. Get every production-ready agent, skill, and command the community has built, working in your `~/.claude` in minutes.
 
 ```bash
+# SSH (recommended if you have a key configured)
 git clone --recurse-submodules git@github.com:learn-by-exploration/ai-powerhouse.git
+
+# HTTPS (if you don't have SSH configured)
+git clone --recurse-submodules https://github.com/learn-by-exploration/ai-powerhouse.git
+
 cd ai-powerhouse && bash master/install.sh
 ```
 
@@ -35,7 +45,30 @@ AI Powerhouse solves this. We track the 12 highest-quality Claude Code repos, ke
 | Missing specialized agents for my stack | `ws-` 182 domain-specific agents across 77 plugins |
 | Manual, repetitive task tracking | `ctm-` AI-powered task lifecycle management |
 | No structured dev workflow | `ecc-` TDD, security review, architecture agents |
-| Token bloat from monolithic configs | Single-purpose plugins, minimal token usage |
+| Token bloat from monolithic configs | Single-purpose plugins; ruflo excluded by default |
+
+---
+
+## Solo Dev Starter Pack
+
+New here? Skip the full 325-tool catalogue. These 7 cover 80% of a solo developer's daily Claude Code workflow — all zero-dependency (no MCP server needed):
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `ecc-code-reviewer` | Agent | Reviews `git diff`. CRITICAL/HIGH/MEDIUM/LOW severity. Only flags issues >80% confidence. |
+| `ecc-architect` | Agent | Read-only architecture advisor. Produces ADRs, flags risks without editing. |
+| `ecc-security-reviewer` | Agent | OWASP-aware. Run before commits touching auth, inputs, or external APIs. |
+| `superpowers-writing-plans` | Skill | Turns a vague idea into a reviewed, bite-sized task list before any code is written. |
+| `superpowers-systematic-debugging` | Skill | Structured hypothesis → isolation → fix for mystery bugs. |
+| `gsd-context-engineering` | Skill | Prevents context rot. Keeps Claude aligned to the original spec across long sessions. |
+| `mem-mem-search` | Skill | Search past sessions before writing anything new. 10 min saves 2+ hours of rework. _(requires MCP setup — see below)_ |
+
+**Typical daily loop:**
+```
+mem-mem-search → superpowers-writing-plans → [implement with TDD] → ecc-code-reviewer
+```
+
+For the full 325+ tool set with routing, see [Tools by Category](#tools-by-category) below.
 
 ---
 
@@ -52,49 +85,91 @@ AI Powerhouse solves this. We track the 12 highest-quality Claude Code repos, ke
 
 ## Quick Install
 
+> **macOS note:** The default system bash (3.2) does not support this script. If you're on macOS:
+> ```bash
+> brew install bash          # install bash 4+
+> /opt/homebrew/bin/bash master/install.sh
+> ```
+> Check your version first: `bash --version`
+
 ### Clone with all submodules
+
 ```bash
+# SSH (recommended if you have a key configured)
 git clone --recurse-submodules git@github.com:learn-by-exploration/ai-powerhouse.git
+
+# HTTPS (if you don't have SSH configured)
+git clone --recurse-submodules https://github.com/learn-by-exploration/ai-powerhouse.git
+
 cd ai-powerhouse
 ```
 
+> **Location matters:** The installer creates absolute-path symlinks. Clone to a permanent location — if you move the repo later, run `bash master/install.sh` again from the new path to rebuild the symlinks.
+
 ### Install (symlinks all tools into `~/.claude`)
+
 ```bash
 bash master/install.sh
 ```
 
 ### Install modes
+
 ```bash
-bash master/install.sh              # Minimal (recommended) — core tools only
-bash master/install.sh --full       # Full — adds 11 language rule sets
-bash master/install.sh --no-ruflo   # Skip 76 enterprise agents (saves ~50K tokens)
+bash master/install.sh              # Default — core tools only, ruflo excluded
+bash master/install.sh --full       # Adds 11 language rule sets (~15-20K extra tokens)
+bash master/install.sh --with-ruflo # Adds 76 enterprise agents (+~50K tokens)
+bash master/install.sh --local      # Installs to master/.claude/ instead of ~/.claude
 bash master/install.sh --dry-run    # Preview without writing
+```
+
+**Sample `--dry-run` output:**
+```
+[install] AI Powerhouse dev
+[dry-run] mkdir -p '/home/user/.claude/agents'
+[dry-run] mkdir -p '/home/user/.claude/skills'
+[dry-run] ln -sf '.../everything-claude-code/agents/architect.md' -> '/home/user/.claude/agents/ecc-architect.md'
+[dry-run] ln -sf '.../superpowers/agents/code-reviewer.md' -> '/home/user/.claude/agents/superpowers-code-reviewer.md'
+... (~325 agent symlinks, ~338 skill symlinks, ~198 command symlinks)
+[install] Agents   : 249
+[install] Skills   : 300
+[install] Commands : 194
 ```
 
 Restart Claude Code after installing.
 
 ---
 
-## The 12 Source Repos (81,000+ Combined ★)
+## Uninstall
 
-Every agent and skill in AI Powerhouse comes from repos the developer community has already validated:
+```bash
+bash master/uninstall.sh            # remove all symlinks from ~/.claude
+bash master/uninstall.sh --dry-run  # preview what would be removed
+```
+
+Removes all prefixed agents, skills, commands, hooks, rules, and the manifest. Your existing non-Powerhouse Claude Code setup is untouched.
+
+---
+
+## The 12 Source Repos (680,000+ Combined ★)
+
+These are the stars the community awarded to each source project — not this repo's stars. Every agent and skill in AI Powerhouse was built and validated by those communities.
 
 | Repo | Stars | Prefix | What It Adds |
 |------|-------|--------|--------------|
+| [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | ★ 151k | `ecc-` | Anthropic hackathon winner — core agent framework |
+| [obra/superpowers](https://github.com/obra/superpowers) | ★ 147k | `superpowers-` | Spec-to-code autonomous workflow |
+| [karpathy/autoresearch](https://github.com/karpathy/autoresearch) | ★ 70k | ref | Automated research reference (standalone Python tool) |
+| [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | ★ 63k | `uiux-` | 67 UI styles, 161 design rules, 13 framework stacks |
+| [gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done) | ★ 51k | `gsd-` | Meta-prompting + context engineering + spec-driven dev |
+| [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) | ★ 48k | `mem-` | Cross-session memory via vector search + MCP |
+| [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | ★ 38k | ref | Canonical curated list of Claude Code resources |
 | [wshobson/agents](https://github.com/wshobson/agents) | ★ 33k | `ws-` | 182 agents, 149 skills, 96 commands across 77 domain plugins |
+| [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | ★ 31k | `ruflo-` | Enterprise multi-agent orchestration + WASM kernels _(opt-in)_ |
 | [eyaltoledano/claude-task-master](https://github.com/eyaltoledano/claude-task-master) | ★ 26k | `ctm-` | AI-powered task lifecycle management + MCP server |
 | [SuperClaude-Org/SuperClaude_Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | ★ 22k | `sc-` | 20 agents, 30 `/sc:` commands, 7 behavioral modes |
-| [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | ★ 151k | `ecc-` | Anthropic hackathon winner — core agent framework |
-| [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | ★ 6k | `ruflo-` | Enterprise multi-agent orchestration + WASM kernels |
-| [gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done) | ★ 50k | `gsd-` | Meta-prompting + context engineering + spec-driven dev |
-| [obra/superpowers](https://github.com/obra/superpowers) | ★ 2k | `superpowers-` | Spec-to-code autonomous workflow |
-| [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) | ★ 1k | `mem-` | Cross-session memory via vector search + MCP |
-| [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | ★ 2k | `uiux-` | 67 UI styles, 161 design rules, 13 framework stacks |
-| [gonzalezpazmonica/pm-workspace](https://github.com/gonzalezpazmonica/pm-workspace) | ★ 1k | ref | Full AI project management suite (Savia) |
-| [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | ★ 38k | ref | Canonical curated list of Claude Code resources |
-| [karpathy/autoresearch](https://github.com/karpathy/autoresearch) | ★ 70k | ref | Automated research reference (standalone Python tool) |
+| [gonzalezpazmonica/pm-workspace](https://github.com/gonzalezpazmonica/pm-workspace) | ★ 33 | ref | Full AI project management suite (Savia) |
 
-> **"ref"** = tracked for reference, not installed. See [USAGE.md](USAGE.md) for full install details.
+> **"ref"** = included as a git submodule for local browsing, but `install.sh` does not create any symlinks from it. These repos have incompatible directory structures, are standalone tools (not Claude Code agents/skills), or are reference lists. They are cloned so you can read them locally — they contribute zero agents/skills/commands to your installed count and zero tokens to your context.
 
 ---
 
@@ -102,7 +177,7 @@ Every agent and skill in AI Powerhouse comes from repos the developer community 
 
 ### Routing — Start Here
 
-The `master-agent-routing` skill (auto-loaded at session start) applies a decision tree across all 325+ tools. Describe your task — it routes automatically.
+The `master-agent-routing` skill (auto-loaded at session start) applies a decision tree across all tools. Describe your task — it routes automatically.
 
 | Task | Best Tool |
 |------|-----------|
@@ -115,14 +190,14 @@ The `master-agent-routing` skill (auto-loaded at session start) applies a decisi
 | Refactor | `ecc-refactor-cleaner` |
 | UI/UX design | `uiux-ui-ux-pro-max` |
 | "Did we build this before?" | `mem-mem-search` |
-| PR description | `ruflo-pr-manager` |
+| PR description | `ruflo-pr-manager` _(requires --with-ruflo)_ |
 | DB migration | `ecc-database-migrations` |
 | Parallel agent teams | `ws-agent-teams-team-lead` |
-| Multi-agent orchestration | `ruflo-sparc-coordinator` |
+| Multi-agent orchestration | `ruflo-sparc-coordinator` _(requires --with-ruflo)_ |
 | Task/project lifecycle | `ctm-` + Task Master MCP |
 | AI research with confidence scoring | `sc-researcher` + `sc-confidence-check` |
 
-### Production-Ready Agents
+### Key Agents
 
 **`ecc-architect`** — System design, trade-off analysis, ADR creation. Read-only — advises, never edits.
 
@@ -140,15 +215,15 @@ The `master-agent-routing` skill (auto-loaded at session start) applies a decisi
 
 ### Key Skills
 
-**`mem-mem-search`** — 3-layer memory search across all past sessions. Run before writing new code. 10 minutes of search saves 2+ hours of rework.
+**`mem-mem-search`** — 3-layer memory search across all past sessions. Run before writing new code. _(Requires MCP setup — see below.)_
 
-**`mem-smart-explore`** — Semantic codebase mapping. 10-18x cheaper than reading individual files. Start here on any unfamiliar project.
+**`mem-smart-explore`** — Semantic codebase mapping. 10-18x cheaper than reading individual files.
 
-**`superpowers-writing-plans`** — Extracts a spec, writes it back for approval, then breaks into 2–5 min tasks. Forces alignment before any code is written.
+**`superpowers-writing-plans`** — Extracts a spec, writes it back for approval, then breaks into 2–5 min tasks.
 
-**`superpowers-systematic-debugging`** — Structured debugging for mystery failures: generates hypotheses, isolates variables, tracks what's been tried.
+**`superpowers-systematic-debugging`** — Structured debugging for mystery failures: hypotheses, isolation, tracking.
 
-**`gsd-context-engineering`** — Solves context rot. Maintains spec fidelity as Claude fills its context window across long sessions.
+**`gsd-context-engineering`** — Solves context rot. Maintains spec fidelity as Claude fills its context window.
 
 **`sc-confidence-check`** — Score output confidence (0.0–1.0) before committing to a direction.
 
@@ -170,19 +245,36 @@ The `master-agent-routing` skill (auto-loaded at session start) applies a decisi
 
 ---
 
-## What "Battle-Tested" Means
+## Source Quality Standards
 
-Every submodule in AI Powerhouse is sourced from repos that have been:
+Every submodule is selected against these criteria:
 
-- **Community-validated** — 81k+ combined GitHub stars, earned over years of real-world use
-- **Actively maintained** — all 12 repos had commits in the last 30 days
-- **Compatibility-tested** — prefixes prevent collisions; `install.sh` patches known name conflicts automatically
-- **Token-efficient** — single-purpose agents, progressive disclosure, minimal context overhead
-- **Multi-platform** — works with Claude Code, Cursor, OpenCode, Gemini CLI, Codex, Windsurf, Roo
+- **Community traction** — GitHub stars from each source project's own community (see table above for individual counts; these are not this repo's stars)
+- **Active maintenance** — verified to have commits within the last 60 days at time of collection
+- **Prefix-safe** — `install.sh` assigns unique prefixes and patches known `name:` frontmatter collisions automatically
+- **Token-scoped** — single-purpose agents preferred over monolithic configs; ruflo (high token cost) is opt-in via `--with-ruflo`
+- **Multi-platform** — tested with Claude Code; community-reported to work with Cursor, OpenCode, Gemini CLI, Codex, Windsurf, Roo
+
+**What this is not:** A guarantee that every agent produces correct output on every codebase. These are community tools — review the source repo for each prefix before using agents in production-critical workflows.
 
 ---
 
 ## Installation Reference
+
+### Token loading behavior
+
+Agents and commands are **not** pre-loaded into context. They are read by Claude Code on-demand when invoked by name or matched by the routing skill. Installing 325+ agents does **not** mean 325 agents are consuming tokens in every session.
+
+**What is always in context after install:**
+- `~/.claude/CLAUDE.md` — loaded at every session start (~2–3K tokens)
+- `rules/` files — loaded per your Claude Code settings
+- `master-agent-routing` skill — invoked once at session start via CLAUDE.md (~1–3K tokens)
+
+**What is not in context unless invoked:**
+- Individual agents (`.md` files in `~/.claude/agents/`) — loaded only when called
+- Skills and commands — loaded only when explicitly triggered
+
+**Ruflo note:** Ruflo hooks require the `claude-flow` MCP server and add overhead even when ruflo agents are not explicitly invoked. This is why ruflo is excluded by default — use `--with-ruflo` only if you are running the claude-flow MCP server.
 
 ### What gets installed
 
@@ -195,11 +287,11 @@ Every submodule in AI Powerhouse is sourced from repos that have been:
 | super-claude | 20 | 6 | 30 | Behavioral modes framework |
 | claude-mem | — | 5 | — | Cross-session memory |
 | ui-ux-pro-max | — | 7 | — | UI/UX design intelligence |
-| ruflo _(optional)_ | 76 | 38 | 4 | Enterprise multi-agent |
+| ruflo _(--with-ruflo only)_ | 76 | 38 | 4 | Enterprise multi-agent |
 | claude-task-master | — | — | 3 | AI task management |
 | master | — | 1 | — | Agent routing skill |
-| **Total (with ruflo)** | **~325** | **~338** | **~198** | |
-| **Total (--no-ruflo)** | **~249** | **~300** | **~194** | Recommended for solo devs |
+| **Total (default)** | **~249** | **~300** | **~194** | Ruflo excluded |
+| **Total (--with-ruflo)** | **~325** | **~338** | **~198** | Full collection |
 
 All tools are prefixed by source — zero name collisions:
 `ecc-` · `ws-` · `superpowers-` · `gsd-` · `sc-` · `mem-` · `uiux-` · `ruflo-` · `ctm-`
@@ -213,18 +305,11 @@ git add submodule-hashes.lock && git commit -m "chore: update submodule hashes"
 bash master/install.sh                  # refresh symlinks
 ```
 
-### Uninstalling
-
-```bash
-bash master/uninstall.sh            # remove from ~/.claude
-bash master/uninstall.sh --dry-run  # preview first
-```
-
 ---
 
-## Memory Setup (Cross-Session Intelligence)
+## Memory Setup (Optional — Cross-Session Intelligence)
 
-`mem-mem-search`, `mem-smart-explore`, and `mem-timeline-report` require the **claude-mem MCP server**. Without it, memory search returns nothing — you lose the most differentiating feature of this collection.
+`mem-mem-search`, `mem-smart-explore`, and `mem-timeline-report` require the **claude-mem MCP server**. The base install works without this — you just won't have cross-session memory until it's set up.
 
 ```bash
 # 1. Install Bun (required by claude-mem)
@@ -238,11 +323,13 @@ cd claude-mem/plugin && bun install
   "mcpServers": {
     "claude-mem": {
       "command": "bun",
-      "args": ["run", "/path/to/ai-powerhouse/claude-mem/plugin/src/index.ts"]
+      "args": ["run", "/absolute/path/to/ai-powerhouse/claude-mem/plugin/src/index.ts"]
     }
   }
 }
 ```
+
+Use the absolute path to your `ai-powerhouse` directory. Verify it's working in a Claude Code session: `invoke mem-mem-search for "test"` — if it returns results (or "no memories found"), the MCP server is connected.
 
 ---
 
@@ -251,18 +338,18 @@ cd claude-mem/plugin && bun install
 ```
 ai-powerhouse/
 ├── master/                   # Install/uninstall scripts + routing skill
-├── everything-claude-code/   # ecc-* — Anthropic hackathon winner framework
-├── wshobson-agents/          # ws-* — 182 agents, 149 skills, 96 commands
-├── super-claude/             # sc-* — 20 agents, 6 skills, 30 /sc: commands
-├── get-shit-done/            # gsd-* — context engineering + spec-driven dev
-├── superpowers/              # superpowers-* — spec-to-code workflow
-├── claude-mem/               # mem-* — cross-session memory + MCP server
-├── claude-task-master/       # ctm-* — AI task lifecycle + MCP
-├── ui-ux-pro-max-skill/      # uiux-* — UI/UX design intelligence
-├── ruflo/                    # ruflo-* — enterprise multi-agent (optional)
-├── pm-workspace/             # [ref] AI PM suite (Savia)
-├── awesome-claude-code/      # [ref] canonical community list
-├── autoresearch/             # [ref] Karpathy's automated research
+├── everything-claude-code/   # ecc-* — Anthropic hackathon winner (★ 151k)
+├── wshobson-agents/          # ws-* — 182 agents, 149 skills, 96 commands (★ 33k)
+├── super-claude/             # sc-* — 20 agents, 6 skills, 30 /sc: commands (★ 22k)
+├── get-shit-done/            # gsd-* — context engineering + spec-driven dev (★ 51k)
+├── superpowers/              # superpowers-* — spec-to-code workflow (★ 147k)
+├── claude-mem/               # mem-* — cross-session memory + MCP server (★ 48k)
+├── claude-task-master/       # ctm-* — AI task lifecycle + MCP (★ 26k)
+├── ui-ux-pro-max-skill/      # uiux-* — UI/UX design intelligence (★ 63k)
+├── ruflo/                    # ruflo-* — enterprise multi-agent, opt-in (★ 31k)
+├── pm-workspace/             # [ref] AI PM suite (★ 33)
+├── awesome-claude-code/      # [ref] canonical community list (★ 38k)
+├── autoresearch/             # [ref] Karpathy's automated research (★ 70k)
 └── submodule-hashes.lock     # Pinned commit hashes for reproducibility
 ```
 
@@ -272,9 +359,9 @@ ai-powerhouse/
 
 Found a high-quality Claude Code repo that belongs here? Open an issue or PR:
 
-1. It should have real community traction (stars + active maintenance)
-2. It should add something not already covered by the 12 existing submodules
-3. Include the repo URL, star count, and what unique gap it fills
+1. Real community traction (stars + active maintenance)
+2. Adds something not already covered by the 12 existing submodules
+3. Include the repo URL, verified star count, and what unique gap it fills
 
 ---
 

@@ -4,8 +4,8 @@
 #
 # Usage:
 #   bash install.sh              # install to ~/.claude (default: minimal)
-#   bash install.sh --full       # install all language rules + ruflo
-#   bash install.sh --no-ruflo   # exclude ruflo agents/skills/hooks
+#   bash install.sh --full        # install all language rules
+#   bash install.sh --with-ruflo  # include 76 ruflo enterprise agents/skills/hooks (+~50K tokens)
 #   bash install.sh --local      # install to master/.claude (repo-local)
 #   bash install.sh --dry-run    # preview only (no changes made)
 
@@ -18,7 +18,7 @@ VERSION="$(git -C "$REPO_ROOT" describe --tags --always 2>/dev/null || echo 'dev
 DRY_RUN=false
 LOCAL=false
 MINIMAL=true    # default ON — full install requires --full
-NO_RUFLO=false
+NO_RUFLO=true
 
 for arg in "$@"; do
   case "$arg" in
@@ -26,7 +26,8 @@ for arg in "$@"; do
     --local)    LOCAL=true ;;
     --minimal)  MINIMAL=true ;;   # kept for backwards compat
     --full)     MINIMAL=false ;;
-    --no-ruflo) NO_RUFLO=true ;;
+    --no-ruflo)   NO_RUFLO=true ;;   # kept for backwards compat
+    --with-ruflo) NO_RUFLO=false ;;
     --*)
       echo "[install] WARNING: Unknown flag '$arg' — ignored." >&2
       ;;
@@ -485,7 +486,7 @@ if ! $DRY_RUN; then
     echo "  Re-run with --full to add Python/Go/Rust/etc. rules (~15-20K more tokens)"
   fi
   if $NO_RUFLO; then
-    echo "  (--no-ruflo — 76 ruflo agents/skills excluded)"
+    echo "  (ruflo not included — use --with-ruflo to add 76 enterprise agents/skills)"
   fi
   echo ""
   echo "Restart Claude Code to pick up all new tools."

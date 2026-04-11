@@ -18,7 +18,10 @@ A practical guide to getting the most out of this collection. Jump to the sectio
 ### 1. Clone with submodules
 
 ```bash
+# SSH (recommended)
 git clone --recurse-submodules git@github.com:learn-by-exploration/ai-powerhouse.git
+# HTTPS alternative
+git clone --recurse-submodules https://github.com/learn-by-exploration/ai-powerhouse.git
 cd ai-powerhouse
 ```
 
@@ -29,11 +32,16 @@ git submodule update --init --recursive
 
 ### 2. Install
 
+> **macOS users:** macOS ships bash 3.2 which lacks associative arrays. Install bash 4+ first:
+> `brew install bash && /opt/homebrew/bin/bash master/install.sh`
+
+> **Note:** The repo must stay in a permanent location — symlinks use absolute paths. Moving it later requires re-running install.sh.
+
 ```bash
 bash master/install.sh
 ```
 
-This symlinks ~325 agents, ~338 skills, ~198 commands, and hooks into `~/.claude`. Restart Claude Code after.
+This symlinks ~249 agents, ~300 skills, ~194 commands, and hooks into `~/.claude`. Restart Claude Code after.
 
 **Preview before installing:**
 ```bash
@@ -44,15 +52,16 @@ bash master/install.sh --dry-run
 
 | Flag | What it does |
 |------|-------------|
-| _(no flags)_ | **Minimal install** — core tools only, no language-specific rules. Best default. |
+| _(no flags)_ | **Default install** — all tools except ruflo. Best for most users. |
+| `--with-ruflo` | Adds 76 ruflo enterprise agents, skills, and hooks (~50K extra tokens). |
 | `--full` | Adds 11 language rule sets (Python, Go, Rust, TypeScript, Java, Kotlin, C++, C#, PHP, Swift, Perl). Adds ~15-20K tokens. |
-| `--no-ruflo` | Skips all 76 ruflo enterprise agents, skills, and hooks. Saves ~40-60K context tokens. Recommended for solo devs. |
+| `--no-ruflo` | _(alias, same as default)_ |
 | `--local` | Installs to `master/.claude/` instead of `~/.claude`. Useful for trying changes without touching your global setup. |
 | `--dry-run` | Prints what would happen, writes nothing. |
 
-**Example — minimal solo dev setup:**
+**Example — add ruflo enterprise agents:**
 ```bash
-bash master/install.sh --no-ruflo
+bash master/install.sh --with-ruflo
 ```
 
 **Example — full install with all language rules:**
@@ -76,8 +85,8 @@ bash master/install.sh --full
 | super-claude | 20 | 6 | 30 | Behavioral modes + MCP orchestration |
 | claude-task-master | — | — | 3 | AI task management commands |
 | master | — | 1 | — | Agent routing skill |
-| **Total (with ruflo)** | **~325** | **~338** | **~198** | |
-| **Total (--no-ruflo)** | **~249** | **~300** | **~194** | Recommended for most |
+| **Total (default)** | **~249** | **~300** | **~194** | Recommended for most |
+| **Total (--with-ruflo)** | **~325** | **~338** | **~198** | Enterprise/team setups |
 
 All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`) so they never collide.
 
