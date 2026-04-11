@@ -46,12 +46,11 @@ warn() { echo "[install] ⚠️  $*" >&2; }
 
 log "AI Powerhouse $VERSION"
 
-# NOTE: pm-workspace and awesome-claude-code are tracked as submodules (for reference/browsing)
-# but are NOT installed by this script. pm-workspace has an incompatible directory structure
-# (496 commands directly in root rather than commands/ subdir) and awesome-claude-code is a
-# curated Awesome List with no installable agents or skills.
-# See: https://github.com/gonzalezpazmonica/pm-workspace (pm-workspace)
-#      https://github.com/hesreallyhim/awesome-claude-code (awesome-claude-code)
+# NOTE: Some submodules are tracked for reference/browsing only and NOT installed:
+# - pm-workspace: incompatible directory structure (commands in root, not commands/ subdir)
+# - awesome-claude-code: curated Awesome List with no installable agents/skills
+# - autoresearch (karpathy): pure Python nanochat training research; no Claude Code tooling
+# See their READMEs for standalone usage.
 
 # Check all required submodules are initialized
 _required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill)
@@ -203,6 +202,24 @@ if ! $NO_RUFLO && [[ -d "$REPO_ROOT/ruflo/plugin/agents/" ]]; then
   unset _ruflo_seen
 fi
 
+# wshobson-agents (nested plugin structure — flatten, prefix with ws-)
+if [[ -d "$REPO_ROOT/wshobson-agents/plugins" ]]; then
+  while IFS= read -r f; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f")
+    plugin=$(basename "$(dirname "$(dirname "$f")")")
+    link "$f" "$CLAUDE_DIR/agents/ws-${plugin}-${base}"
+  done < <(find "$REPO_ROOT/wshobson-agents/plugins" -name "*.md" -path "*/agents/*" 2>/dev/null | sort)
+fi
+
+# super-claude (plugins/superclaude/agents/ structure)
+for f in "$REPO_ROOT/super-claude/plugins/superclaude/agents/"*.md; do
+  [[ -f "$f" ]] || continue
+  link "$f" "$CLAUDE_DIR/agents/sc-$(basename "$f")"
+done
+
+# claude-task-master (no dedicated agents dir — MCP-based)
+
 log "Agents installed."
 
 # ── SKILLS ───────────────────────────────────────────────────────────────────
@@ -249,6 +266,20 @@ if [[ -d "$SCRIPT_DIR/skills" ]]; then
   done
 fi
 
+# wshobson-agents skills (nested: plugins/*/skills/SKILL_NAME/)
+if [[ -d "$REPO_ROOT/wshobson-agents/plugins" ]]; then
+  while IFS= read -r d; do
+    [[ -d "$d" ]] || continue
+    link "$d" "$CLAUDE_DIR/skills/ws-$(basename "$d")"
+  done < <(find "$REPO_ROOT/wshobson-agents/plugins" -mindepth 3 -maxdepth 3 -type d -path "*/skills/*" 2>/dev/null | sort)
+fi
+
+# super-claude skills
+for d in "$REPO_ROOT/super-claude/plugins/superclaude/skills/"/*/; do
+  [[ -d "$d" ]] || continue
+  link "$d" "$CLAUDE_DIR/skills/sc-$(basename "$d")"
+done
+
 log "Skills installed."
 
 # ── COMMANDS ─────────────────────────────────────────────────────────────────
@@ -280,6 +311,28 @@ if ! $NO_RUFLO; then
     link "$f" "$CLAUDE_DIR/commands/ruflo-$(basename "$f")"
   done
 fi
+
+# wshobson-agents commands
+if [[ -d "$REPO_ROOT/wshobson-agents/plugins" ]]; then
+  while IFS= read -r f; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f")
+    plugin=$(basename "$(dirname "$(dirname "$f")")")
+    link "$f" "$CLAUDE_DIR/commands/ws-${plugin}-${base}"
+  done < <(find "$REPO_ROOT/wshobson-agents/plugins" -name "*.md" -path "*/commands/*" 2>/dev/null | sort)
+fi
+
+# super-claude commands
+for f in "$REPO_ROOT/super-claude/plugins/superclaude/commands/"*.md; do
+  [[ -f "$f" ]] || continue
+  link "$f" "$CLAUDE_DIR/commands/sc-$(basename "$f")"
+done
+
+# claude-task-master commands
+for f in "$REPO_ROOT/claude-task-master/.claude/commands/"*.md; do
+  [[ -f "$f" ]] || continue
+  link "$f" "$CLAUDE_DIR/commands/ctm-$(basename "$f")"
+done
 
 log "Commands installed."
 
@@ -389,8 +442,9 @@ def count_dir(d, ext=None):
         return len([f for f in files if (not ext or f.endswith(ext))]) if files else 0
     except: return 0
 
-submodules = ['awesome-claude-code','claude-mem','everything-claude-code',
-              'get-shit-done','pm-workspace','ruflo','superpowers','ui-ux-pro-max-skill']
+submodules = ['awesome-claude-code','autoresearch','claude-mem','claude-task-master',
+              'everything-claude-code','get-shit-done','pm-workspace','ruflo',
+              'super-claude','superpowers','ui-ux-pro-max-skill','wshobson-agents']
 
 manifest = {
     'version': os.environ.get('VERSION','dev'),

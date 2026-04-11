@@ -33,7 +33,7 @@ git submodule update --init --recursive
 bash master/install.sh
 ```
 
-This symlinks 123 agents, 189 skills, 68 commands, and hooks into `~/.claude`. Restart Claude Code after.
+This symlinks ~325 agents, ~338 skills, ~198 commands, and hooks into `~/.claude`. Restart Claude Code after.
 
 **Preview before installing:**
 ```bash
@@ -72,11 +72,19 @@ bash master/install.sh --full
 | claude-mem | — | 5 | — | Cross-session memory |
 | ui-ux-pro-max | — | 7 | — | UI/UX design |
 | ruflo _(optional)_ | 76 | 38 | 4 | Enterprise multi-agent |
+| wshobson-agents | 182 | 149 | 96 | 77-plugin agent+skill collection |
+| super-claude | 20 | 6 | 30 | Behavioral modes + MCP orchestration |
+| claude-task-master | — | — | 3 | AI task management commands |
 | master | — | 1 | — | Agent routing skill |
-| **Total (with ruflo)** | **123** | **189** | **68** | |
-| **Total (--no-ruflo)** | **47** | **151** | **64** | Recommended for most |
+| **Total (with ruflo)** | **~325** | **~338** | **~198** | |
+| **Total (--no-ruflo)** | **~249** | **~300** | **~194** | Recommended for most |
 
-All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`) so they never collide.
+All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`) so they never collide.
+
+**Reference-only submodules** (browsable but not installed):
+- `awesome-claude-code` — curated community list
+- `pm-workspace` — PM workspace reference
+- `autoresearch` — Karpathy's automated nanochat training research (standalone Python tool)
 
 ---
 
@@ -177,6 +185,9 @@ Quick reference:
 | PR description | `ruflo-pr-manager` (requires ruflo install) |
 | DB migration | `ecc-database-migrations` skill |
 | Multi-agent orchestration | `ruflo-sparc-coordinator` (requires ruflo + claude-flow MCP) |
+| Parallel agent teams | `ws-agent-orchestration-context-manager` + `ws-agent-teams-*` |
+| Task/project lifecycle | `/ctm-dedupe` + claude-task-master MCP server |
+| Confidence scoring | `sc-confidence-check` skill |
 
 ### Key agents
 
@@ -207,6 +218,39 @@ Quick reference:
 **`superpowers-dispatching-parallel-agents`** — Pattern for running independent tasks concurrently (e.g. review + security scan + language lint simultaneously).
 
 **`master-agent-routing`** — The decision tree for all 123+ tools. Auto-loaded at session start.
+
+### New: wshobson-agents (`ws-` prefix)
+
+182 agents and 149 skills across 77 domain-focused plugins. Covers areas not found elsewhere: accessibility auditing, blockchain/Web3, ARM microcontrollers, business analytics, C4 architecture, CICD automation, and multi-agent team coordination with built-in PluginEval quality scoring.
+
+```
+ws-agent-teams-team-lead          ← orchestrate a 4-agent dev team
+ws-agent-orchestration-context-manager  ← manage context across parallel agents
+ws-backend-development-*          ← backend API agents
+ws-cicd-automation-*              ← CI/CD agents
+```
+
+### New: SuperClaude (`sc-` prefix)
+
+20 specialized agents and 30 `/sc:` commands with 7 behavioral modes (research, coder, architect, analyst, security, docs, devops). Coordinated MCP integrations for Tavily, Playwright, Context7.
+
+```
+sc-researcher        ← deep research agent with confidence scoring
+sc-security-auditor  ← security analysis agent
+/sc:analyze          ← analyze code with specified mode
+/sc:implement        ← implement with auto-selected agent
+sc-confidence-check  ← skill: score output confidence (0.0-1.0)
+```
+
+### New: claude-task-master (`ctm-` prefix)
+
+AI-powered task lifecycle management. Parses PRDs into structured tasks with dependencies, runs as MCP server for cross-session tracking. Best used alongside the Task Master MCP server.
+
+```
+/ctm-dedupe          ← deduplicate tasks across projects
+```
+
+See [claude-task-master README](claude-task-master/README.md) for full MCP setup.
 
 ### Key commands
 

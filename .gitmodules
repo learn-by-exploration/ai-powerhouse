@@ -30,3 +30,19 @@
 	path = ruflo
 	url = https://github.com/ruvnet/ruflo.git
 	branch = main
+[submodule "wshobson-agents"]
+	path = wshobson-agents
+	url = https://github.com/wshobson/agents
+	branch = main
+[submodule "super-claude"]
+	path = super-claude
+	url = https://github.com/SuperClaude-Org/SuperClaude_Framework
+	branch = master
+[submodule "claude-task-master"]
+	path = claude-task-master
+	url = https://github.com/eyaltoledano/claude-task-master
+	branch = main
+[submodule "autoresearch"]
+	path = autoresearch
+	url = https://github.com/karpathy/autoresearch.git
+	branch = master
