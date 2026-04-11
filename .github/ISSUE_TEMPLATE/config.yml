@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions
+    url: https://github.com/learn-by-exploration/ai-powerhouse/discussions
+    about: Ask questions, share workflows, or show what you've built
+  - name: awesome-claude-code
+    url: https://github.com/hesreallyhim/awesome-claude-code
+    about: Browse the canonical list of all Claude Code community resources

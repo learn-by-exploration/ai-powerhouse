@@ -1,0 +1,52 @@
+name: Suggest a Repo
+description: Recommend a Claude Code repo to add as a submodule
+title: "[repo]: "
+labels: ["enhancement", "new-submodule"]
+body:
+  - type: input
+    id: repo-url
+    attributes:
+      label: Repository URL
+      placeholder: https://github.com/owner/repo
+    validations:
+      required: true
+  - type: input
+    id: stars
+    attributes:
+      label: Current star count
+      placeholder: "12,500"
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What unique gap does it fill?
+      description: Explain what this repo adds that isn't covered by the existing 12 submodules.
+      placeholder: "This repo provides X which none of the current submodules cover..."
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: What does it contain?
+      multiple: true
+      options:
+        - Agents (.md files)
+        - Skills (directories with SKILL.md)
+        - Commands (slash commands)
+        - Hooks (lifecycle hooks)
+        - MCP server
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Quality checklist
+      options:
+        - label: Has commits within the last 60 days
+          required: true
+        - label: Has a license file
+          required: true
+        - label: I've verified the star count is accurate
+          required: true

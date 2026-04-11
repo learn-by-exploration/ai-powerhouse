@@ -1,0 +1,54 @@
+name: Bug Report
+description: Report a problem with install.sh, uninstall.sh, or installed tools
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      placeholder: Describe the issue...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: dry-run
+    attributes:
+      label: Dry-run output
+      description: "Run `bash master/install.sh --dry-run 2>&1 | tail -20` and paste the output."
+      render: shell
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Ubuntu 24.04 / macOS 15.2 / etc."
+    validations:
+      required: true
+  - type: input
+    id: bash-version
+    attributes:
+      label: Bash version
+      description: "Output of `bash --version | head -1`"
+      placeholder: "GNU bash, version 5.2.21"
+    validations:
+      required: true
+  - type: dropdown
+    id: install-mode
+    attributes:
+      label: Install mode used
+      options:
+        - Default (no flags)
+        - --with-ruflo
+        - --full
+        - --local
+        - --dry-run
+    validations:
+      required: true
