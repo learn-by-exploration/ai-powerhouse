@@ -1,6 +1,6 @@
 # AI Powerhouse — Master Configuration
 
-You have access to 123 agents, 189 skills, and 68 commands from 8 best-in-class repos.
+You have access to 279 agents, 365 skills, and 280 commands from 10 sources.
 **First, invoke the `master-agent-routing` skill to select the right tool for your task.**
 
 ---

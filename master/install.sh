@@ -191,7 +191,13 @@ done
 # get-shit-done
 for f in "$REPO_ROOT/get-shit-done/agents/"*.md; do
   [[ -f "$f" ]] || continue
-  link "$f" "$CLAUDE_DIR/agents/gsd-$(basename "$f")"
+  base=$(basename "$f")
+  # Source files already have gsd- prefix — don't double it
+  if [[ "$base" == gsd-* ]]; then
+    link "$f" "$CLAUDE_DIR/agents/$base"
+  else
+    link "$f" "$CLAUDE_DIR/agents/gsd-$base"
+  fi
 done
 
 # ruflo (nested dirs — flatten, prefix category on duplicate basenames)
@@ -313,11 +319,17 @@ for f in "$REPO_ROOT/superpowers/commands/"*.md; do
   link "$f" "$CLAUDE_DIR/commands/superpowers-$(basename "$f")"
 done
 
-# get-shit-done
-for f in "$REPO_ROOT/get-shit-done/commands/"*.md; do
+# get-shit-done (commands are nested under commands/gsd/)
+while IFS= read -r f; do
   [[ -f "$f" ]] || continue
-  link "$f" "$CLAUDE_DIR/commands/gsd-$(basename "$f")"
-done
+  base=$(basename "$f")
+  # Source files already have gsd- prefix — don't double it
+  if [[ "$base" == gsd-* ]]; then
+    link "$f" "$CLAUDE_DIR/commands/$base"
+  else
+    link "$f" "$CLAUDE_DIR/commands/gsd-$base"
+  fi
+done < <(find "$REPO_ROOT/get-shit-done/commands/" -name "*.md" 2>/dev/null | sort)
 
 # ruflo (top-level entry points only)
 if ! $NO_RUFLO; then
@@ -382,7 +394,13 @@ link "$REPO_ROOT/everything-claude-code/hooks/hooks.json" \
 # get-shit-done
 for f in "$REPO_ROOT/get-shit-done/hooks/"*.js; do
   [[ -f "$f" ]] || continue
-  link "$f" "$CLAUDE_DIR/hooks/gsd-$(basename "$f")"
+  base=$(basename "$f")
+  # Source files already have gsd- prefix — don't double it
+  if [[ "$base" == gsd-* ]]; then
+    link "$f" "$CLAUDE_DIR/hooks/$base"
+  else
+    link "$f" "$CLAUDE_DIR/hooks/gsd-$base"
+  fi
 done
 
 # claude-mem — marketplace symlink must use $CLAUDE_DIR (respects --local mode)

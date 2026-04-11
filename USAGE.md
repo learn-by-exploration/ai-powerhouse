@@ -41,7 +41,7 @@ git submodule update --init --recursive
 bash master/install.sh
 ```
 
-This symlinks ~249 agents, ~300 skills, ~194 commands, and hooks into `~/.claude`. Restart Claude Code after.
+This symlinks ~279 agents, ~365 skills, ~280 commands, and hooks into `~/.claude`. Restart Claude Code after.
 
 **Preview before installing:**
 ```bash
@@ -53,7 +53,7 @@ bash master/install.sh --dry-run
 | Flag | What it does |
 |------|-------------|
 | _(no flags)_ | **Default install** — all tools except ruflo. Best for most users. |
-| `--with-ruflo` | Adds 76 ruflo enterprise agents, skills, and hooks (~50K extra tokens). |
+| `--with-ruflo` | Adds 77 ruflo enterprise agents, skills, and hooks (~50K extra tokens). |
 | `--full` | Adds 11 language rule sets (Python, Go, Rust, TypeScript, Java, Kotlin, C++, C#, PHP, Swift, Perl). Adds ~15-20K tokens. |
 | `--backup` | Snapshots `~/.claude` to `~/.claude.backup-<timestamp>` before writing. Recommended on first install if you have existing customizations. |
 | `--no-ruflo` | _(alias, same as default)_ |
@@ -76,18 +76,18 @@ bash master/install.sh --full
 
 | Source | Agents | Skills | Commands | Notes |
 |--------|--------|--------|----------|-------|
-| everything-claude-code | 28 | 130+ | 57 | Core ECC framework |
+| everything-claude-code | 47 | 181 | 79 | Core ECC framework |
 | superpowers | 1 | 14 | 3 | Spec-to-code workflow |
-| get-shit-done | 18 | — | 1 (+ 56 sub-cmds) | Spec-driven dev |
-| claude-mem | — | 5 | — | Cross-session memory |
+| get-shit-done | 29 | — | 71 | Context engineering + spec dev |
+| claude-mem | — | 7 | — | Cross-session memory |
 | ui-ux-pro-max | — | 7 | — | UI/UX design |
-| ruflo _(optional)_ | 76 | 38 | 4 | Enterprise multi-agent |
+| ruflo _(optional)_ | 77 | 38 | 4 | Enterprise multi-agent |
 | wshobson-agents | 182 | 149 | 96 | 77-plugin agent+skill collection |
 | super-claude | 20 | 6 | 30 | Behavioral modes + MCP orchestration |
-| claude-task-master | — | — | 3 | AI task management commands |
+| claude-task-master | — | — | 1 | AI task management commands |
 | master | — | 1 | — | Agent routing skill |
-| **Total (default)** | **~249** | **~300** | **~194** | Recommended for most |
-| **Total (--with-ruflo)** | **~325** | **~338** | **~198** | Enterprise/team setups |
+| **Total (default)** | **~279** | **~365** | **~280** | Recommended for most |
+| **Total (--with-ruflo)** | **~356** | **~403** | **~284** | Enterprise/team setups |
 
 All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`) so they never collide.
 
@@ -227,7 +227,7 @@ Quick reference:
 
 **`superpowers-dispatching-parallel-agents`** — Pattern for running independent tasks concurrently (e.g. review + security scan + language lint simultaneously).
 
-**`master-agent-routing`** — The decision tree for all 123+ tools. Auto-loaded at session start.
+**`master-agent-routing`** — The decision tree for all 924+ tools. Auto-loaded at session start.
 
 ### New: wshobson-agents (`ws-` prefix)
 

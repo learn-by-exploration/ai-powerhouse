@@ -1,13 +1,13 @@
-# AI Powerhouse — 325+ Claude Code Agents, Skills, Hooks & Subagents
+# AI Powerhouse — 356+ Claude Code Agents, Skills, Hooks & Subagents
 
 > Install the entire Claude Code community ecosystem in one script. Agents, skills, hooks, slash-commands, MCP servers & subagents — ready for agentic coding.
 
 [![GitHub Stars](https://img.shields.io/github/stars/learn-by-exploration/ai-powerhouse?style=flat-square&logo=github&label=Stars)](https://github.com/learn-by-exploration/ai-powerhouse/stargazers)
 [![Last Commit](https://img.shields.io/github/last-commit/learn-by-exploration/ai-powerhouse?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse/commits)
 [![License](https://img.shields.io/github/license/learn-by-exploration/ai-powerhouse?style=flat-square)](LICENSE)
-[![Agents](https://img.shields.io/badge/Agents-325%2B-blueviolet?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
-[![Skills](https://img.shields.io/badge/Skills-338%2B-blue?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
-[![Commands](https://img.shields.io/badge/Commands-198%2B-green?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
+[![Agents](https://img.shields.io/badge/Agents-356%2B-blueviolet?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
+[![Skills](https://img.shields.io/badge/Skills-403%2B-blue?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
+[![Commands](https://img.shields.io/badge/Commands-284%2B-green?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-orange?style=flat-square)](https://claude.ai/code)
 [![Source Repo Stars](https://img.shields.io/badge/Source%20Repos-680k%2B%20★-yellow?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse#the-12-source-repos)
 
@@ -52,7 +52,7 @@ AI Powerhouse solves this. We track the 12 highest-quality Claude Code repos, ke
 
 ## Solo Dev Starter Pack
 
-New here? Skip the full 325-tool catalogue. These 7 cover 80% of a solo developer's daily Claude Code workflow — all zero-dependency (no MCP server needed):
+New here? Skip the full 356-tool catalogue. These 7 cover 80% of a solo developer's daily Claude Code workflow — all zero-dependency (no MCP server needed):
 
 | Tool | Type | What it does |
 |------|------|--------------|
@@ -69,15 +69,15 @@ New here? Skip the full 325-tool catalogue. These 7 cover 80% of a solo develope
 mem-mem-search → superpowers-writing-plans → [implement with TDD] → ecc-code-reviewer
 ```
 
-For the full 325+ tool set with routing, see [Tools by Category](#tools-by-category) below.
+For the full 356+ tool set with routing, see [Tools by Category](#tools-by-category) below.
 
 ---
 
 ## What You Get
 
-- **325+ AI agents** — specialists for coding, security, architecture, devops, UI/UX, and more
-- **338+ skills** — composable Claude Code capabilities across every workflow
-- **198+ slash-commands** — turn Claude Code into a full agentic coding workstation
+- **356+ AI agents** — specialists for coding, security, architecture, devops, UI/UX, and more
+- **403+ skills** — composable Claude Code capabilities across every workflow
+- **284+ slash-commands** — turn Claude Code into a full agentic coding workstation
 - **Hooks** — PreToolUse / PostToolUse / Stop lifecycle hooks from 3 sources
 - **Subagents** — delegate to specialized subagents for parallel agentic workflows
 - **MCP servers** — cross-session memory (claude-mem) + task lifecycle (claude-task-master)
@@ -134,10 +134,10 @@ bash master/install.sh --dry-run    # Preview without writing
 [dry-run] mkdir -p '/home/user/.claude/skills'
 [dry-run] ln -sf '.../everything-claude-code/agents/architect.md' -> '/home/user/.claude/agents/ecc-architect.md'
 [dry-run] ln -sf '.../superpowers/agents/code-reviewer.md' -> '/home/user/.claude/agents/superpowers-code-reviewer.md'
-... (~325 agent symlinks, ~338 skill symlinks, ~198 command symlinks)
-[install] Agents   : 249
-[install] Skills   : 300
-[install] Commands : 194
+... (~356 agent symlinks, ~403 skill symlinks, ~284 command symlinks)
+[install] Agents   : 279
+[install] Skills   : 365
+[install] Commands : 280
 ```
 
 Restart Claude Code after installing.
@@ -268,7 +268,7 @@ Every submodule is selected against these criteria:
 
 ### Token loading behavior
 
-Agents and commands are **not** pre-loaded into context. They are read by Claude Code on-demand when invoked by name or matched by the routing skill. Installing 325+ agents does **not** mean 325 agents are consuming tokens in every session.
+Agents and commands are **not** pre-loaded into context. They are read by Claude Code on-demand when invoked by name or matched by the routing skill. Installing 356+ agents does **not** mean 356 agents are consuming tokens in every session.
 
 **What is always in context after install:**
 - `~/.claude/CLAUDE.md` — loaded at every session start (~2–3K tokens; grows as you add your own rules)
@@ -289,18 +289,18 @@ Token figures are approximate, measured with Claude's tokenizer as of April 2026
 
 | Source | Agents | Skills | Commands | Notes |
 |--------|--------|--------|----------|-------|
-| everything-claude-code | 28 | 130+ | 57 | Core ECC framework |
+| everything-claude-code | 47 | 181 | 79 | Core ECC framework |
 | wshobson-agents | 182 | 149 | 96 | Domain-specialized plugins |
 | superpowers | 1 | 14 | 3 | Spec-to-code workflow |
-| get-shit-done | 18 | — | 57 | Context engineering + spec dev |
+| get-shit-done | 29 | — | 71 | Context engineering + spec dev |
 | super-claude | 20 | 6 | 30 | Behavioral modes framework |
-| claude-mem | — | 5 | — | Cross-session memory |
+| claude-mem | — | 7 | — | Cross-session memory |
 | ui-ux-pro-max | — | 7 | — | UI/UX design intelligence |
-| ruflo _(--with-ruflo only)_ | 76 | 38 | 4 | Enterprise multi-agent |
-| claude-task-master | — | — | 3 | AI task management |
+| ruflo _(--with-ruflo only)_ | 77 | 38 | 4 | Enterprise multi-agent |
+| claude-task-master | — | — | 1 | AI task management |
 | master | — | 1 | — | Agent routing skill |
-| **Total (default)** | **~249** | **~300** | **~194** | Ruflo excluded |
-| **Total (--with-ruflo)** | **~325** | **~338** | **~198** | Full collection |
+| **Total (default)** | **~279** | **~365** | **~280** | Ruflo excluded |
+| **Total (--with-ruflo)** | **~356** | **~403** | **~284** | Full collection |
 
 All tools are prefixed by source — zero name collisions:
 `ecc-` · `ws-` · `superpowers-` · `gsd-` · `sc-` · `mem-` · `uiux-` · `ruflo-` · `ctm-`
