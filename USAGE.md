@@ -55,6 +55,7 @@ bash master/install.sh --dry-run
 | _(no flags)_ | **Default install** — all tools except ruflo. Best for most users. |
 | `--with-ruflo` | Adds 76 ruflo enterprise agents, skills, and hooks (~50K extra tokens). |
 | `--full` | Adds 11 language rule sets (Python, Go, Rust, TypeScript, Java, Kotlin, C++, C#, PHP, Swift, Perl). Adds ~15-20K tokens. |
+| `--backup` | Snapshots `~/.claude` to `~/.claude.backup-<timestamp>` before writing. Recommended on first install if you have existing customizations. |
 | `--no-ruflo` | _(alias, same as default)_ |
 | `--local` | Installs to `master/.claude/` instead of `~/.claude`. Useful for trying changes without touching your global setup. |
 | `--dry-run` | Prints what would happen, writes nothing. |
@@ -330,9 +331,12 @@ If it returns results (or "no memories found"), the MCP server is connected. If 
 
 ### Update all submodules to latest upstream
 
+`submodule-hashes.lock` records the exact git SHA of every submodule at install time — it is a reproducibility record, not a pin. Running `update --remote --merge` pulls the current upstream HEAD; reviewing the resulting diff tells you exactly what changed before you commit.
+
 ```bash
 git submodule update --remote --merge
-bash scripts/update-hashes.sh       # update the lock file
+bash scripts/update-hashes.sh       # record new SHAs in lock file
+git diff submodule-hashes.lock      # review what changed across all 12 repos
 git add submodule-hashes.lock
 git commit -m "chore: update submodule hashes"
 bash master/install.sh              # refresh symlinks

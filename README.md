@@ -16,7 +16,7 @@
      Place at: docs/assets/install-demo.gif
      ![Install demo](docs/assets/install-demo.gif) -->
 
-**AI Powerhouse** is a curated meta-collection of 12 Claude Code submodules — sourced from the highest-starred community repos and installed in one script. Stop spending hours reading READMEs. Get every production-ready agent, skill, and command the community has built, working in your `~/.claude` in minutes.
+**AI Powerhouse** is a curated meta-collection of 12 Claude Code submodules — sourced from the highest-starred community repos and installed in one script. Stop spending hours reading READMEs. Get every community-validated agent, skill, and command working in your `~/.claude` in minutes.
 
 ```bash
 # SSH (recommended if you have a key configured)
@@ -79,7 +79,7 @@ For the full 325+ tool set with routing, see [Tools by Category](#tools-by-categ
 - **198+ commands** — slash commands that turn Claude Code into a full AI workstation
 - **12 curated submodules** — hand-picked from the highest-quality community repos
 - **One-script install** — symlinks everything into `~/.claude`, prefixed, zero collisions
-- **Works with** Claude Code, Cursor, OpenCode, Gemini CLI, Codex, Windsurf, Roo
+- **Built for** Claude Code. Community-reported partial compatibility with Cursor, OpenCode, Windsurf — other runtimes may require manual path adaptation
 
 ---
 
@@ -118,6 +118,7 @@ bash master/install.sh
 bash master/install.sh              # Default — core tools only, ruflo excluded
 bash master/install.sh --full       # Adds 11 language rule sets (~15-20K extra tokens)
 bash master/install.sh --with-ruflo # Adds 76 enterprise agents (+~50K tokens)
+bash master/install.sh --backup     # Snapshot ~/.claude before writing (safe first run)
 bash master/install.sh --local      # Installs to master/.claude/ instead of ~/.claude
 bash master/install.sh --dry-run    # Preview without writing
 ```
@@ -152,11 +153,11 @@ Removes all prefixed agents, skills, commands, hooks, rules, and the manifest. Y
 
 ## The 12 Source Repos (680,000+ Combined ★)
 
-These are the stars the community awarded to each source project — not this repo's stars. Every agent and skill in AI Powerhouse was built and validated by those communities.
+These are the stars the community awarded to each source project — not this repo's stars. Click any repo name to verify on GitHub. (Counts verified April 2026.)
 
 | Repo | Stars | Prefix | What It Adds |
 |------|-------|--------|--------------|
-| [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | ★ 151k | `ecc-` | Anthropic hackathon winner — core agent framework |
+| [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | ★ 151k | `ecc-` | Highest-starred Claude Code agent framework |
 | [obra/superpowers](https://github.com/obra/superpowers) | ★ 147k | `superpowers-` | Spec-to-code autonomous workflow |
 | [karpathy/autoresearch](https://github.com/karpathy/autoresearch) | ★ 70k | ref | Automated research reference (standalone Python tool) |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | ★ 63k | `uiux-` | 67 UI styles, 161 design rules, 13 framework stacks |
@@ -167,7 +168,7 @@ These are the stars the community awarded to each source project — not this re
 | [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | ★ 31k | `ruflo-` | Enterprise multi-agent orchestration + WASM kernels _(opt-in)_ |
 | [eyaltoledano/claude-task-master](https://github.com/eyaltoledano/claude-task-master) | ★ 26k | `ctm-` | AI-powered task lifecycle management + MCP server |
 | [SuperClaude-Org/SuperClaude_Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | ★ 22k | `sc-` | 20 agents, 30 `/sc:` commands, 7 behavioral modes |
-| [gonzalezpazmonica/pm-workspace](https://github.com/gonzalezpazmonica/pm-workspace) | ★ 33 | ref | Full AI project management suite (Savia) |
+| [gonzalezpazmonica/pm-workspace](https://github.com/gonzalezpazmonica/pm-workspace) | ★ 33 | ref | AI project management suite (Savia) — included as a browsable reference; fills a PM workflow gap not covered by other repos despite low star count |
 
 > **"ref"** = included as a git submodule for local browsing, but `install.sh` does not create any symlinks from it. These repos have incompatible directory structures, are standalone tools (not Claude Code agents/skills), or are reference lists. They are cloned so you can read them locally — they contribute zero agents/skills/commands to your installed count and zero tokens to your context.
 
@@ -249,13 +250,13 @@ The `master-agent-routing` skill (auto-loaded at session start) applies a decisi
 
 Every submodule is selected against these criteria:
 
-- **Community traction** — GitHub stars from each source project's own community (see table above for individual counts; these are not this repo's stars)
-- **Active maintenance** — verified to have commits within the last 60 days at time of collection
-- **Prefix-safe** — `install.sh` assigns unique prefixes and patches known `name:` frontmatter collisions automatically
+- **Community traction** — GitHub stars from each source project's own community (see table above; click any repo name to verify)
+- **Active maintenance** — verified to have commits within the last 60 days at time of collection; a commit does not equal a tested agent — it confirms the project is alive
+- **Prefix-safe** — `install.sh` assigns unique prefixes per source and patches known `name:` frontmatter collisions (currently 4 known conflicts patched; see `install.sh` lines 415–423 for the logic)
 - **Token-scoped** — single-purpose agents preferred over monolithic configs; ruflo (high token cost) is opt-in via `--with-ruflo`
-- **Multi-platform** — tested with Claude Code; community-reported to work with Cursor, OpenCode, Gemini CLI, Codex, Windsurf, Roo
+- **Reproducible** — `submodule-hashes.lock` records the exact git SHA of every submodule at install time; run `bash scripts/verify-submodules.sh` to confirm your install matches the locked hashes
 
-**What this is not:** A guarantee that every agent produces correct output on every codebase. These are community tools — review the source repo for each prefix before using agents in production-critical workflows.
+**What this is not:** A guarantee that every agent produces correct output on every codebase. These are community tools — review the source repo for each prefix before using agents in production-critical workflows. There is no automated test suite validating agent behavior across codebases.
 
 ---
 
@@ -266,15 +267,19 @@ Every submodule is selected against these criteria:
 Agents and commands are **not** pre-loaded into context. They are read by Claude Code on-demand when invoked by name or matched by the routing skill. Installing 325+ agents does **not** mean 325 agents are consuming tokens in every session.
 
 **What is always in context after install:**
-- `~/.claude/CLAUDE.md` — loaded at every session start (~2–3K tokens)
+- `~/.claude/CLAUDE.md` — loaded at every session start (~2–3K tokens; grows as you add your own rules)
 - `rules/` files — loaded per your Claude Code settings
 - `master-agent-routing` skill — invoked once at session start via CLAUDE.md (~1–3K tokens)
 
 **What is not in context unless invoked:**
-- Individual agents (`.md` files in `~/.claude/agents/`) — loaded only when called
+- Individual agents (`.md` files in `~/.claude/agents/`) — loaded only when called by name
 - Skills and commands — loaded only when explicitly triggered
 
+Token figures are approximate, measured with Claude's tokenizer as of April 2026 — they vary with upstream file changes.
+
 **Ruflo note:** Ruflo hooks require the `claude-flow` MCP server and add overhead even when ruflo agents are not explicitly invoked. This is why ruflo is excluded by default — use `--with-ruflo` only if you are running the claude-flow MCP server.
+
+**Existing `~/.claude` directory:** The installer skips any file that already exists as a real file (non-symlink) in `~/.claude` and warns you. It only overwrites its own previous symlinks. Your existing non-Powerhouse customizations are preserved. To back up your current `~/.claude` before installing: `bash master/install.sh --backup`.
 
 ### What gets installed
 
@@ -309,7 +314,7 @@ bash master/install.sh                  # refresh symlinks
 
 ## Memory Setup (Optional — Cross-Session Intelligence)
 
-`mem-mem-search`, `mem-smart-explore`, and `mem-timeline-report` require the **claude-mem MCP server**. The base install works without this — you just won't have cross-session memory until it's set up.
+`mem-mem-search`, `mem-smart-explore`, and `mem-timeline-report` require the **claude-mem MCP server**. The base install works without this — you just won't have cross-session memory until it's set up. **Setup takes ~15 minutes once.**
 
 ```bash
 # 1. Install Bun (required by claude-mem)

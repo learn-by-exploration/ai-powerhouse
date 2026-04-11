@@ -8,6 +8,7 @@
 #   bash install.sh --with-ruflo  # include 76 ruflo enterprise agents/skills/hooks (+~50K tokens)
 #   bash install.sh --local      # install to master/.claude (repo-local)
 #   bash install.sh --dry-run    # preview only (no changes made)
+#   bash install.sh --backup     # snapshot ~/.claude before writing (safe first-time install)
 
 set -euo pipefail
 
@@ -19,11 +20,13 @@ DRY_RUN=false
 LOCAL=false
 MINIMAL=true    # default ON — full install requires --full
 NO_RUFLO=true
+BACKUP=false
 
 for arg in "$@"; do
   case "$arg" in
     --dry-run)  DRY_RUN=true ;;
     --local)    LOCAL=true ;;
+    --backup)   BACKUP=true ;;
     --minimal)  MINIMAL=true ;;   # kept for backwards compat
     --full)     MINIMAL=false ;;
     --no-ruflo)   NO_RUFLO=true ;;   # kept for backwards compat
@@ -125,6 +128,17 @@ if warnings:
     for w in warnings: print(w)
     print("[install]    Run: bash scripts/update-hashes.sh  to accept new commits")
 PYEOF
+fi
+
+# ── Backup existing ~/.claude if requested ───────────────────────────────────
+
+if $BACKUP && ! $DRY_RUN && [[ -d "$CLAUDE_DIR" ]]; then
+  BACKUP_PATH="${CLAUDE_DIR}.backup-$(date +%Y%m%d-%H%M%S)"
+  log "Backing up $CLAUDE_DIR → $BACKUP_PATH"
+  cp -r "$CLAUDE_DIR" "$BACKUP_PATH"
+  log "Backup complete. Restore with: cp -r '$BACKUP_PATH' '$CLAUDE_DIR'"
+elif $BACKUP && $DRY_RUN; then
+  echo "[dry-run] cp -r '$CLAUDE_DIR' '${CLAUDE_DIR}.backup-<timestamp>'"
 fi
 
 # ── Ensure target directories exist ─────────────────────────────────────────
