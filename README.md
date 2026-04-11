@@ -1,6 +1,6 @@
-# AI Powerhouse — 325+ Agents, 338+ Skills & 198+ Commands for Claude Code
+# AI Powerhouse — 325+ Claude Code Agents, Skills, Hooks & Subagents
 
-> Install the entire Claude Code community ecosystem in a single script. One command. Optional MCP setup for memory features.
+> Install the entire Claude Code community ecosystem in one script. Agents, skills, hooks, slash-commands, MCP servers & subagents — ready for agentic coding.
 
 [![GitHub Stars](https://img.shields.io/github/stars/learn-by-exploration/ai-powerhouse?style=flat-square&logo=github&label=Stars)](https://github.com/learn-by-exploration/ai-powerhouse/stargazers)
 [![Last Commit](https://img.shields.io/github/last-commit/learn-by-exploration/ai-powerhouse?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse/commits)
@@ -16,7 +16,7 @@
      Place at: docs/assets/install-demo.gif
      ![Install demo](docs/assets/install-demo.gif) -->
 
-**AI Powerhouse** is a curated meta-collection of 12 Claude Code submodules — sourced from the highest-starred community repos and installed in one script. Stop spending hours reading READMEs. Get every community-validated agent, skill, and command working in your `~/.claude` in minutes.
+**AI Powerhouse** is a curated meta-collection of 12 Claude Code submodules — sourced from the highest-starred community repos and installed in one script. Get every community-validated agent, skill, hook, subagent, slash-command, and MCP config working in your `~/.claude` in minutes. Whether you're doing vibe coding, agentic coding, or production AI workflows — this is the harness.
 
 ```bash
 # SSH (recommended if you have a key configured)
@@ -32,11 +32,11 @@ cd ai-powerhouse && bash master/install.sh
 
 ## Why AI Powerhouse?
 
-Claude Code ships with powerful defaults — but the community has built **hundreds of specialized agents, skills, and commands** that most developers never discover. They're scattered across 12 different repos, each with its own install process, naming convention, and README.
+Claude Code ships with powerful defaults — but the community has built **hundreds of specialized agents, skills, hooks, subagents, and slash-commands** that most developers never discover. They're scattered across 12 different repos, each with its own install process, naming convention, and README.
 
 AI Powerhouse solves this. We track the 12 highest-quality Claude Code repos, keep them updated, and install everything into `~/.claude` with a single script — prefixed and collision-free.
 
-**What the top 1% of Claude Code users already have installed:**
+**What the top 1% of Claude Code users already have in their `~/.claude`:**
 
 | Pain Point | Solution |
 |------------|----------|
@@ -44,8 +44,9 @@ AI Powerhouse solves this. We track the 12 highest-quality Claude Code repos, ke
 | No persistent memory between sessions | `mem-` cross-session memory with vector search |
 | Missing specialized agents for my stack | `ws-` 182 domain-specific agents across 77 plugins |
 | Manual, repetitive task tracking | `ctm-` AI-powered task lifecycle management |
-| No structured dev workflow | `ecc-` TDD, security review, architecture agents |
+| No structured agentic coding workflow | `ecc-` TDD, security review, architecture agents |
 | Token bloat from monolithic configs | Single-purpose plugins; ruflo excluded by default |
+| No hooks or subagent orchestration | `ecc-` + `gsd-` hooks, `ruflo-` swarm (opt-in) |
 
 ---
 
@@ -76,7 +77,10 @@ For the full 325+ tool set with routing, see [Tools by Category](#tools-by-categ
 
 - **325+ AI agents** — specialists for coding, security, architecture, devops, UI/UX, and more
 - **338+ skills** — composable Claude Code capabilities across every workflow
-- **198+ commands** — slash commands that turn Claude Code into a full AI workstation
+- **198+ slash-commands** — turn Claude Code into a full agentic coding workstation
+- **Hooks** — PreToolUse / PostToolUse / Stop lifecycle hooks from 3 sources
+- **Subagents** — delegate to specialized subagents for parallel agentic workflows
+- **MCP servers** — cross-session memory (claude-mem) + task lifecycle (claude-task-master)
 - **12 curated submodules** — hand-picked from the highest-quality community repos
 - **One-script install** — symlinks everything into `~/.claude`, prefixed, zero collisions
 - **Built for** Claude Code. Community-reported partial compatibility with Cursor, OpenCode, Windsurf — other runtimes may require manual path adaptation
@@ -372,10 +376,16 @@ Found a high-quality Claude Code repo that belongs here? Open an issue or PR:
 
 ## Related Resources
 
-- [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) — The canonical curated list of all Claude Code resources
-- [Claude Code Docs](https://docs.anthropic.com/claude/docs/claude-code) — Official Anthropic documentation
+- [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) — The canonical curated list of all Claude Code resources (skills, hooks, subagents, MCP servers)
+- [Claude Code Docs](https://docs.anthropic.com/claude/docs/claude-code) — Official Anthropic documentation for agents, skills, and hooks
 - [Model Context Protocol](https://modelcontextprotocol.io) — The MCP standard used by claude-mem and claude-task-master
 - [USAGE.md](USAGE.md) — Full workflow guide, daily patterns, and troubleshooting
+
+## Compatibility
+
+Built for **Claude Code**. Tools are `.md` files in `~/.claude/agents/`, `~/.claude/skills/`, and `~/.claude/commands/` — the standard Claude Code directory structure.
+
+Community-reported partial compatibility with **Cursor**, **OpenCode**, **Windsurf**, **Codex CLI**, and **Gemini CLI**. Other runtimes with `~/.claude`-compatible agent loading may work without modification.
 
 ---
 
