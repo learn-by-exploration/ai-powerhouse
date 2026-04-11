@@ -10,6 +10,7 @@
 [![Commands](https://img.shields.io/badge/Commands-284%2B-green?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-orange?style=flat-square)](https://claude.ai/code)
 [![Source Repo Stars](https://img.shields.io/badge/Source%20Repos-680k%2B%20★-yellow?style=flat-square)](https://github.com/learn-by-exploration/ai-powerhouse#the-12-source-repos)
+[![Discussions](https://img.shields.io/github/discussions/learn-by-exploration/ai-powerhouse?style=flat-square&logo=github)](https://github.com/learn-by-exploration/ai-powerhouse/discussions)
 
 <!-- TODO: Add terminal recording showing install + first skill invocation (~45s).
      Suggested tool: https://github.com/charmbracelet/vhs or asciinema.
@@ -380,6 +381,8 @@ Found a high-quality Claude Code repo that belongs here? Open an issue or PR:
 - [Claude Code Docs](https://docs.anthropic.com/claude/docs/claude-code) — Official Anthropic documentation for agents, skills, and hooks
 - [Model Context Protocol](https://modelcontextprotocol.io) — The MCP standard used by claude-mem and claude-task-master
 - [USAGE.md](USAGE.md) — Full workflow guide, daily patterns, and troubleshooting
+- [CONTRIBUTING.md](CONTRIBUTING.md) — How to suggest new repos or report bugs
+- [Discussions](https://github.com/learn-by-exploration/ai-powerhouse/discussions) — Ask questions, share workflows, show what you've built
 
 ## Compatibility
 
@@ -390,6 +393,10 @@ Community-reported partial compatibility with **Cursor**, **OpenCode**, **Windsu
 ---
 
 ⭐ **Star this repo** to get notified when new community repos are added to the collection.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=learn-by-exploration/ai-powerhouse&type=Date)](https://star-history.com/#learn-by-exploration/ai-powerhouse&Date)
 
 ---
 
