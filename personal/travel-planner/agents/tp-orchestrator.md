@@ -128,18 +128,6 @@ Travel window: [paste dates]
 Country holidays to check: [Japan 2026, India 2026, Singapore 2026, etc.]
 ```
 
-**tp-visa agent:**
-```
-Check visa requirements for these travelers.
-For each traveler, determine:
-1. Do they need a visa for the destination country?
-2. If transiting through hub airports (DEL, DOH, SIN, BKK, HKG, KUL), do they need transit visas?
-3. What is the visa processing time? Is it feasible given the travel date?
-4. What are the visa fees?
-
-Travelers: [paste traveler nationalities + routes]
-```
-
 ### ★ GATE 1: Feasibility Check
 Before proceeding, verify:
 - [ ] No traveler has an expired or soon-expiring passport (6-month rule)
@@ -192,7 +180,8 @@ Given ALL collected data, calculate True Cost for every viable plan combination.
 
 True Cost = flight_price + ground_transport + airport_transfer + accommodation
            + travel_insurance + checked_bags + seat_selection + meals_inflight
-           + visa_fees + (leave_days × daily_rate) - miles_earned_value
+           + visa_fees + (leave_days × daily_rate) + disruption_cost + fx_fees
+           (miles_earned shown as informational line — NOT subtracted)
 
 Rank plans by True Cost (ascending).
 For each plan, also score:
@@ -266,7 +255,7 @@ Present results in this format:
  │ Airport transfer:   ¥X,XXX    [confidence]       │
  │ Travel insurance:   ¥X,XXX    [estimated]        │
  │ Leave days (X days):¥XX,XXX   [calculated]       │
- │ Miles earned:      -¥X,XXX    [estimated]        │
+ │ Miles earned:       ~X,XXX     [info only]         │
  │ ─────────────────────────────                    │
  │ TRUE COST:          ¥XXX,XXX                     │
  └──────────────────────────────────────────────────┘

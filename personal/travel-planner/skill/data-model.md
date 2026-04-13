@@ -58,6 +58,7 @@ trip_request:
         cabin_class: string            # economy | premium_economy | business | first
         miles_programs:
           - program: string            # "JAL Mileage Bank"
+            alliance: string           # "oneworld" | "star_alliance" | "skyteam" | "none"
             balance: number            # Current miles balance (optional)
             tier: string               # "regular" | "silver" | "gold" | "diamond"
       budget:
@@ -207,7 +208,9 @@ flight_results:
           booking_protection_level: string # FULL | PARTIAL | NONE
           baggage_included: boolean
           baggage_weight_kg: number     # If included
-          miles_program: string
+          miles_program: string         # Airline's own FF program
+          miles_alliance: string        # "oneworld" | "star_alliance" | "skyteam" | "none"
+          miles_creditable_to: string[] # Which traveler programs can credit these miles
           miles_earned: number
           price: Money
           source: string

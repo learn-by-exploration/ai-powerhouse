@@ -240,6 +240,12 @@ verification_report:
 
 3. **Fare class differences**: Economy Saver (V-class) vs Economy Standard (M-class) vs Economy Flex (Y-class) all have different prices, change rules, refundability, miles earning rates, and upgrade eligibility for the "same" flight. Make sure you're comparing the same fare class. A V-class and a Y-class fare look identical on Google Flights but one lets you change for free and the other is a lottery ticket.
 
+4. **Alliance mismatch on miles**: Verify the operating airline's alliance matches the traveler's FF program. JAL Mileage Bank (Oneworld) CANNOT credit flights on Air India (Star Alliance) or vice versa. Common alliance mapping:
+   - **Oneworld**: JAL, Qantas, BA, AA, Cathay, Malaysia Airlines
+   - **Star Alliance**: ANA, Air India, Singapore Airlines, Thai, United, Lufthansa, Turkish
+   - **SkyTeam**: Korean Air, Delta, Air France-KLM, Vietnam Airlines, Garuda
+   If `miles_alliance` ≠ traveler's program alliance → set `miles_creditable_to` to empty and flag: "Miles NOT creditable to [program]. Consider booking on [alliance-matched airline] instead."
+
 4. **Seasonal pricing**: Golden Week prices are 30-50% higher than off-peak. If a source shows an off-peak price for a peak travel date, it's stale data.
 
 5. **Baggage inclusion**: JAL includes 23kg checked bag. IndiGo doesn't. A "¥15K cheaper" IndiGo flight might only be ¥10K cheaper after adding bag fees. Use per-carrier ancillary cost table from flight agent.

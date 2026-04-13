@@ -173,12 +173,26 @@ flight_results:
           fare_class: "V"                # Booking class / RBD (Y, B, M, H, V, L, etc.)
           fare_basis_code: "VLXJPIN"     # Full fare basis code if available
           fare_rules:
-            refund_type: "credit"        # cash | credit | voucher | none
-            change_fee_before_72h: 25000  # JPY — fee for changes >72h before departure
-            change_fee_within_72h: 40000  # JPY — fee for changes <72h
-            advance_purchase_days: 21     # AP requirement
+            cancellation:
+              free_period_hours: 24      # US DOT 24h free cancel rule
+              fee_tiers:
+                - before_hours: 72
+                  fee: 25000             # JPY — fee for changes >72h before departure
+                - before_hours: 0
+                  fee: 40000             # JPY — fee for changes <72h
+              refund_type: "credit"      # cash | credit | voucher | none
+            change:
+              fee_tiers:
+                - before_hours: 72
+                  fee: 25000
+                - before_hours: 0
+                  fee: 40000
+              routing_change: false
+              name_change: false
+            no_show: "forfeit"           # forfeit | fee
             min_stay_nights: 3
             max_stay_days: 90
+            advance_purchase_days: 21    # AP requirement
           fare_decomposition:
             base_fare: 185000            # JPY
             taxes: 42000                 # Government taxes
@@ -188,6 +202,8 @@ flight_results:
           baggage_included: true
           baggage_weight_kg: 23          # If included
           miles_program: "JAL Mileage Bank"
+          miles_alliance: "oneworld"     # JAL is Oneworld
+          miles_creditable_to: ["JAL Mileage Bank", "Qantas FF", "BA Avios", "AA AAdvantage"]  # Same alliance programs
           miles_earned: 4500             # NOTE: depends on fare class. V-class may earn 50-70% of Y-class
           miles_accrual_rate: 0.5        # Fraction of distance earned (V-class = 50%)
           price:
