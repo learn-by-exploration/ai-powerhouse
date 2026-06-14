@@ -3,6 +3,14 @@
 ## [Unreleased]
 
 ### Added
+- **ISO/IEC/IEEE 15288 systems engineering integration**:
+  - `docs/se-15288.md` — full reference for the 11 Technical processes, with a mapping table from each 15288 process to the Powerhouse tool that implements it
+  - `master/skills/se-lifecycle/SKILL.md` — routing entry point; installed as `master-se-lifecycle`
+  - `master/agents/se-systems-engineer.md` — orchestrator that walks a project through the 11 phases in order and gates phase transitions on verification/validation evidence; installed as `master-se-systems-engineer`
+  - `master/install.sh` — new loop for `master/agents/` (symlinks every `*.md` in `master/agents/` as `master-<name>.md`)
+  - `master/CLAUDE.md` — new "Systems engineering lifecycle" row in the routing table; new philosophy bullet "SE lifecycle first"
+  - `master/README.md` — new `master/agents/` entry in the directory tree; master row bumped to 1 agent / 2 skills; new "Frameworks & standards" section
+  - `README.md` — new "Frameworks & Standards" section
 - **4 new submodules**:
   - `drawio-skill` (Agents365-ai) — single always-installed `drawio-skill` for exportable `.drawio` diagrams (PNG/SVG/PDF)
   - `plantuml-skill` (Agents365-ai) — text-based `.puml` diagrams via Kroki API, no Java needed

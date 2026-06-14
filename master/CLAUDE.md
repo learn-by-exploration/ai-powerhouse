@@ -26,6 +26,7 @@ You have access to 309 agents, 619 skills, and 284 commands from 16 sources (def
 | **C-level strategy** | `rez-c-level-advisor-*` |
 | **Compliance / regulatory** | `rez-compliance-os-*` / `rez-ra-qm-team-*` |
 | **Multi-agent / enterprise** | `ruflo-sparc-coordinator` + `ruflo-swarm-orchestration` |
+| **Systems engineering lifecycle** (ISO 15288) | `se-lifecycle` skill (route) → `se-systems-engineer` agent (walk through) |
 | **"Did we build this before?"** | `mem-mem-search` |
 | **Document something** | `ecc-doc-updater` agent |
 | **Onboard to a new codebase** | `mem-smart-explore` → `ecc-architect` → `gsd-codebase-mapper` |
@@ -47,6 +48,7 @@ Five systems are loaded. They agree on the fundamentals:
 4. **80% coverage** — ECC minimum. Superpowers enforces it. Both mandate it.
 5. **Verify before done** — `superpowers-verification-before-completion`. Evidence first.
 6. **Subagents for heavy work** — Keep this session clean; delegate implementation.
+7. **SE lifecycle first** — For new systems, follow ISO/IEC/IEEE 15288 (stakeholder needs → disposal). The phase you're in drives the tool you pick. See `master-se-lifecycle` and `master-se-systems-engineer`.
 
 ### When Rules Conflict: Resolution Order
 

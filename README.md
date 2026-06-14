@@ -278,6 +278,13 @@ Every submodule is selected against these criteria:
 
 ---
 
+## Frameworks & Standards
+
+| Standard | What AI Powerhouse does with it |
+|---|---|
+| **ISO/IEC/IEEE 15288** (System life cycle processes) | Provides `master-se-lifecycle` skill (route to the right tool for your current phase) and `master-se-systems-engineer` agent (walk through the 11 Technical processes with proper phase gating). See `docs/se-15288.md`. |
+| **OKF v0.1** (Open Knowledge Format) | Vendored at `docs/okf-spec.md` as a reference for organizing knowledge in agent-readable form. |
+
 ## Installation Reference
 
 ### Token loading behavior

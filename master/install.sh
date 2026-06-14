@@ -281,11 +281,20 @@ if ! $NO_RUFLO; then
   done < <(find "$REPO_ROOT/ruflo/plugins/" -mindepth 3 -maxdepth 3 -type d -path "*/skills/*" 2>/dev/null | sort)
 fi
 
-# master (local skills: agent-routing etc.)
+# master (local skills: agent-routing, se-lifecycle, ...)
 if [[ -d "$SCRIPT_DIR/skills" ]]; then
-  for d in "$SCRIPT_DIR/skills/"/*/; do
+  for d in "$SCRIPT_DIR/skills/"*/; do
     [[ -d "$d" ]] || continue
     link "$d" "$CLAUDE_DIR/skills/master-$(basename "$d")"
+  done
+fi
+
+# master (local agents: se-systems-engineer, ...)
+if [[ -d "$SCRIPT_DIR/agents" ]]; then
+  for f in "$SCRIPT_DIR/agents/"*.md; do
+    [[ -f "$f" ]] || continue
+    base="$(basename "$f" .md)"
+    link "$f" "$CLAUDE_DIR/agents/master-${base}.md"
   done
 fi
 
