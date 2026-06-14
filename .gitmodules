@@ -54,3 +54,9 @@
 	path = plantuml-skill
 	url = https://github.com/Agents365-ai/plantuml-skill.git
 	branch = main
+[submodule "anthropics-skills"]
+	path = anthropics-skills
+	url = https://github.com/anthropics/skills.git
+[submodule "alirezarezvani-claude-skills"]
+	path = alirezarezvani-claude-skills
+	url = https://github.com/alirezarezvani/claude-skills.git

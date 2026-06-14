@@ -135,7 +135,7 @@ jobs:
 
       - name: Verify uninstall cleaned up agents
         run: |
-          remaining=$(ls ~/.claude/agents/ 2>/dev/null | grep -E '^(ecc|gsd|superpowers|ruflo|mem|uiux|master)-' || true)
+          remaining=$(ls ~/.claude/agents/ 2>/dev/null | grep -E '^(ecc|gsd|superpowers|ruflo|mem|uiux|master|ws|sc|ctm)-' || true)
           if [[ -n "$remaining" ]]; then
             echo "ERROR: Agents not removed after uninstall:"
             echo "$remaining"
@@ -145,7 +145,7 @@ jobs:
 
       - name: Verify uninstall cleaned up skills
         run: |
-          remaining=$(ls ~/.claude/skills/ 2>/dev/null | grep -E '^(ecc|gsd|superpowers|ruflo|mem|uiux|master)-' || true)
+          remaining=$(ls ~/.claude/skills/ 2>/dev/null | grep -E '^(ecc|gsd|superpowers|ruflo|mem|uiux|master|ws|sc|ctm|drawio-skill|plantuml-skill)' || true)
           if [[ -n "$remaining" ]]; then
             echo "ERROR: Skills not removed after uninstall:"
             echo "$remaining"

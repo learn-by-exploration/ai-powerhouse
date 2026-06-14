@@ -41,7 +41,7 @@ git submodule update --init --recursive
 bash master/install.sh
 ```
 
-This symlinks ~279 agents, ~365 skills, ~280 commands, and hooks into `~/.claude`. Restart Claude Code after.
+This symlinks ~309 agents, ~619 skills, ~284 commands, and hooks into `~/.claude`. Restart Claude Code after.
 
 **Preview before installing:**
 ```bash
@@ -76,20 +76,24 @@ bash master/install.sh --full
 
 | Source | Agents | Skills | Commands | Notes |
 |--------|--------|--------|----------|-------|
-| everything-claude-code | 47 | 181 | 79 | Core ECC framework |
-| superpowers | 1 | 14 | 3 | Spec-to-code workflow |
-| get-shit-done | 29 | — | 71 | Context engineering + spec dev |
-| claude-mem | — | 7 | — | Cross-session memory |
+| everything-claude-code | 64 | 262 | 84 | Core ECC framework (v2.0) |
+| anthropics-skills | — | 17 | — | Official Anthropic skills: PDF/DOCX/PPTX/XLSX, mcp-builder, webapp-testing |
+| superpowers | — | 14 | — | Spec-to-code workflow |
+| get-shit-done | 33 | — | 67 | Context engineering + spec dev |
+| claude-mem | — | 16 | — | Cross-session memory |
 | ui-ux-pro-max | — | 7 | — | UI/UX design |
-| ruflo _(optional)_ | 77 | 38 | 4 | Enterprise multi-agent |
-| wshobson-agents | 182 | 149 | 96 | 77-plugin agent+skill collection |
+| drawio-skill | — | 1 | — | Draw.io diagram generation (always installed) |
+| plantuml-skill | — | 1 | — | PlantUML via Kroki (always installed) |
+| alirezarezvani-skills | — | 158 | — | Business skills: marketing, finance, C-level, compliance, PM (non-engineering subset) |
+| ruflo _(optional)_ | 55 | 110 | 48 | Enterprise multi-agent |
+| wshobson-agents | 192 | 136 | 102 | 77-plugin agent+skill collection |
 | super-claude | 20 | 6 | 30 | Behavioral modes + MCP orchestration |
 | claude-task-master | — | — | 1 | AI task management commands |
 | master | — | 1 | — | Agent routing skill |
-| **Total (default)** | **~279** | **~365** | **~280** | Recommended for most |
-| **Total (--with-ruflo)** | **~356** | **~403** | **~284** | Enterprise/team setups |
+| **Total (default)** | **~309** | **~619** | **~284** | Recommended for most |
+| **Total (--with-ruflo)** | **~364** | **~729** | **~332** | Enterprise/team setups |
 
-All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`) so they never collide.
+All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`, `anthropic-`, `rez-`, `drawio-skill`, `plantuml-skill`) so they never collide.
 
 **Reference-only submodules** (browsable but not installed):
 - `awesome-claude-code` — curated community list
@@ -148,6 +152,21 @@ Invoke the `ecc-architect` agent. It will:
 
 Invoke `uiux-ui-ux-pro-max` or `uiux-design-system`. These give Claude access to 67 UI styles, 161 design rules, colour palettes, font pairings, and framework-specific guidance.
 
+### Diagrams
+
+For diagram work, two skills cover most cases:
+
+- `drawio-skill` — use when you need an exportable, polished diagram (PNG/SVG/PDF) with rich shape vocabulary (architecture, ER, strict UML, swimlanes).
+- `plantuml-skill` — use when you want a text-based `.puml` source that lives in git, renders in Markdown, and uses the Kroki API (no local Java install needed).
+
+### Document processing (PDF / DOCX / PPTX / XLSX)
+
+The `anthropic-pdf`, `anthropic-docx`, `anthropic-pptx`, `anthropic-xlsx` skills cover most document workflows. Each one is self-contained and includes Python scripts for the heavy lifting.
+
+### MCP server development
+
+`anthropic-mcp-builder` walks you through designing and building an MCP server end-to-end. Use it whenever you need to expose tools to Claude Code.
+
 ### Saving and resuming sessions
 
 ```bash
@@ -190,6 +209,15 @@ Quick reference:
 | Architecture | `ecc-architect` |
 | Refactor/cleanup | `ecc-refactor-cleaner` |
 | UI/UX design | `uiux-ui-ux-pro-max` |
+| Draw.io diagram (exportable) | `drawio-skill` |
+| PlantUML diagram (text-based) | `plantuml-skill` |
+| PDF / DOCX / PPTX / XLSX | `anthropic-pdf` / `anthropic-docx` / `anthropic-pptx` / `anthropic-xlsx` |
+| Build an MCP server | `anthropic-mcp-builder` |
+| Webapp testing | `anthropic-webapp-testing` |
+| Business / marketing / finance | `rez-business-*` / `rez-marketing-skill-*` / `rez-finance-*` |
+| C-level strategy | `rez-c-level-advisor-*` |
+| Compliance / regulatory | `rez-compliance-os-*` / `rez-ra-qm-team-*` |
+| Project management | `rez-project-management-*` |
 | "Did we do this before?" | `mem-mem-search` |
 | Write docs | `ecc-doc-updater` |
 | PR description | `ruflo-pr-manager` (requires ruflo install) |
@@ -231,13 +259,63 @@ Quick reference:
 
 ### New: wshobson-agents (`ws-` prefix)
 
-182 agents and 149 skills across 77 domain-focused plugins. Covers areas not found elsewhere: accessibility auditing, blockchain/Web3, ARM microcontrollers, business analytics, C4 architecture, CICD automation, and multi-agent team coordination with built-in PluginEval quality scoring.
+192 agents and 136 skills across 77 domain-focused plugins. Covers areas not found elsewhere: accessibility auditing, blockchain/Web3, ARM microcontrollers, business analytics, C4 architecture, CICD automation, and multi-agent team coordination with built-in PluginEval quality scoring.
 
 ```
 ws-agent-teams-team-lead          ← orchestrate a 4-agent dev team
 ws-agent-orchestration-context-manager  ← manage context across parallel agents
 ws-backend-development-*          ← backend API agents
 ws-cicd-automation-*              ← CI/CD agents
+```
+
+### New: Diagram skills (`drawio-skill` and `plantuml-skill`)
+
+Always-installed diagram generation skills from Agents365-ai.
+
+```
+drawio-skill      ← generate .drawio XML and export to PNG/SVG/PDF via draw.io desktop CLI
+                    best for: architecture diagrams, ER/UML/sequence, anything with rich shape vocabulary
+plantuml-skill    ← generate .puml text and render to PNG/SVG via Kroki API (no Java needed)
+                    best for: UML, sequence, class, component, ER diagrams, diagrams-as-code in git
+```
+
+Use `drawio-skill` for polished, exportable diagrams; use `plantuml-skill` for text-based, version-controlled diagrams.
+
+### New: Official Anthropic skills (`anthropic-`)
+
+Always-installed, 17 skills from the official anthropics/skills repo (★ 150k).
+
+```
+anthropic-pdf          ← read, extract, fill, merge, split, rotate, OCR PDFs
+anthropic-docx         ← create and edit Word documents with tracked changes
+anthropic-pptx         ← build PowerPoint decks programmatically
+anthropic-xlsx         ← Excel: read/write sheets, formulas, pivot tables
+anthropic-mcp-builder  ← guided workflow to build MCP servers
+anthropic-webapp-testing  ← Playwright-based web app testing
+anthropic-frontend-design ← modern frontend design guidance
+anthropic-brand-guidelines, anthropic-theme-factory, anthropic-canvas-design
+anthropic-claude-api, anthropic-skill-creator, anthropic-doc-coauthoring
+anthropic-internal-comms, anthropic-slack-gif-creator, anthropic-web-artifacts-builder
+anthropic-algorithmic-art
+```
+
+### New: Business skills (`rez-` prefix, from alirezarezvani/claude-skills)
+
+~158 skills in 12 non-engineering domains — fills the business / marketing / finance / compliance gap that no other repo covers.
+
+```
+rez-business-growth-*         ← sales engineer, revenue ops, contract writer
+rez-business-operations-*     ← capacity planner, process mapper, knowledge ops
+rez-c-level-advisor-*         ← CEO, CTO, CFO, Chief AI Officer advisors
+rez-commercial-*              ← vendor mgmt, partnerships, sales enablement
+rez-compliance-os-*           ← SOC 2, HIPAA, GDPR compliance playbooks
+rez-finance-*                 ← investment advisor, financial modeling
+rez-marketing-skill-*         ← SEO, content, growth, demand-gen
+rez-product-team-*            ← PM, UX research, roadmap
+rez-productivity-*            ← personal productivity systems
+rez-project-management-*      ← PMBOK, agile, sprint planning
+rez-ra-qm-team-*              ← regulatory affairs, quality management
+rez-research-ops-*            ← research operations, IRB
 ```
 
 ### New: SuperClaude (`sc-` prefix)

@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+### Added
+- **4 new submodules**:
+  - `drawio-skill` (Agents365-ai) — single always-installed `drawio-skill` for exportable `.drawio` diagrams (PNG/SVG/PDF)
+  - `plantuml-skill` (Agents365-ai) — text-based `.puml` diagrams via Kroki API, no Java needed
+  - `anthropics-skills` (★ 150k) — 17 official Anthropic skills: `anthropic-pdf`, `anthropic-docx`, `anthropic-pptx`, `anthropic-xlsx`, `anthropic-mcp-builder`, `anthropic-webapp-testing`, `anthropic-frontend-design`, etc.
+  - `alirezarezvani-claude-skills` (★ 18k) — 12 non-engineering domains (`business-growth`, `business-operations`, `c-level-advisor`, `commercial`, `compliance-os`, `finance`, `marketing-skill`, `product-team`, `productivity`, `project-management`, `ra-qm-team`, `research-ops`). Engineering domains deliberately skipped to avoid overlap with `wshobson-agents`.
+- `docs/okf-spec.md`: vendored copy of the Open Knowledge Format v0.1 spec (GoogleCloudPlatform/knowledge-catalog). OKF is a markdown + frontmatter format for agent-readable knowledge bundles — could be applied to organize this repo's `master/`, `docs/`, and submodule READMEs.
+- `install.sh`: `drawio-skill`, `plantuml-skill` are always installed (no flag needed). `anthropic-*` skills installed from `anthropics-skills/skills/*` with `anthropic-` prefix. `rez-*` skills installed from selected `alirezarezvani-claude-skills` domains with `rez-<domain>-<skill>` prefix.
+- USAGE.md and master/CLAUDE.md: added sections for diagram skills, official Anthropic skills, and business skills
+- README.md: added badges, source table rows, "What gets installed" table rows, and routing entries for the new submodules
+
+### Fixed — Critical bug
+- `install.sh --with-ruflo`: ruflo agents/skills/commands were not being installed — `ruflo/plugin/` (singular, old path) is empty in ruflo v3.7+; everything moved to `ruflo/plugins/` (plural). Rewrote all ruflo install paths to use `find ruflo/plugins -path "*/agents/*" -name "*.md"`. **This means `--with-ruflo` previously installed zero ruflo content** — fixed in this release.
+
+### Fixed
+- `master/uninstall.sh`: added `ws-`, `sc-`, `ctm-` prefixes to cleanup regex; added explicit removal of `drawio-skill` and `plantuml-skill` skill directories (they were orphaned on uninstall)
+- `scripts/update-hashes.sh`: added `drawio-skill`, `plantuml-skill`, `anthropics-skills`, `alirezarezvani-claude-skills` to the hardcoded submodule list
+- `.github/workflows/test-install.yml`: cleanup regex expanded to `^(ecc|gsd|superpowers|ruflo|mem|uiux|master|ws|sc|ctm)-`; added `drawio-skill|plantuml-skill` for skills cleanup
+- All counts refreshed to reflect actual filesystem: **309 agents, 619 skills, 284 commands** (default); **364 agents, 749 skills, 332 commands** (with `--with-ruflo`). 16 source submodules total.
+
+### Changed
+- Total submodule count: 12 → 16
+- Submodule count documented in README: 13 → 16 (correcting the "13" claim — `alirezarezvani-claude-skills` is the 16th)
+
 ## [0.0.3] — 2026-03-25
 
 ### Fixed — Critical bugs

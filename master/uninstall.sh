@@ -35,7 +35,7 @@ log() { echo "[uninstall] $*"; }
 MANIFEST="$CLAUDE_DIR/POWERHOUSE_MANIFEST.json"
 if [[ ! -f "$MANIFEST" ]]; then
   log "No installation found at $CLAUDE_DIR (manifest missing)."
-  log "If you installed manually, remove files with prefix: ecc- gsd- superpowers- ruflo- mem- uiux- master-"
+  log "If you installed manually, remove files with prefix: ecc- gsd- superpowers- ruflo- mem- uiux- master- ws- sc- ctm- drawio-skill plantuml-skill"
   exit 0
 fi
 
@@ -51,7 +51,7 @@ _remove() {
   fi
 }
 
-for prefix in ecc- superpowers- gsd- mem- ruflo- uiux- master-; do
+for prefix in ecc- superpowers- gsd- mem- ruflo- uiux- master- ws- sc- ctm-; do
   # agents (files)
   for f in "$CLAUDE_DIR/agents/${prefix}"*.md; do
     [[ -e "$f" ]] || continue
@@ -94,6 +94,13 @@ if [[ -L "$_mem_plugin" ]]; then
     log "Removed claude-mem marketplace symlink."
   fi
 fi
+
+# Remove unprefixed skills (drawio-skill, plantuml-skill) by exact name
+for skill in drawio-skill plantuml-skill; do
+  if [[ -e "$CLAUDE_DIR/skills/$skill" || -L "$CLAUDE_DIR/skills/$skill" ]]; then
+    _remove "skill" "$CLAUDE_DIR/skills/$skill"
+  fi
+done
 
 # Remove manifest
 if $DRY_RUN; then

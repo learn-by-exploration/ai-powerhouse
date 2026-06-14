@@ -12,8 +12,9 @@ repo = os.environ['REPO_ROOT']
 lock_file = os.path.join(repo, 'submodule-hashes.lock')
 
 submodules = ['autoresearch','awesome-claude-code','claude-mem','claude-task-master',
-              'everything-claude-code','get-shit-done','pm-workspace','ruflo',
-              'super-claude','superpowers','ui-ux-pro-max-skill','wshobson-agents']
+              'drawio-skill','everything-claude-code','get-shit-done','plantuml-skill',
+              'pm-workspace','ruflo','super-claude','superpowers',
+              'ui-ux-pro-max-skill','wshobson-agents']
 
 hashes = {}
 for m in submodules:

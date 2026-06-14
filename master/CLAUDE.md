@@ -1,6 +1,6 @@
 # AI Powerhouse — Master Configuration
 
-You have access to 279 agents, 365 skills, and 280 commands from 10 sources.
+You have access to 309 agents, 619 skills, and 284 commands from 16 sources (default install; add `--with-ruflo` for 364 agents / 749 skills / 332 commands).
 **First, invoke the `master-agent-routing` skill to select the right tool for your task.**
 
 ---
@@ -17,6 +17,14 @@ You have access to 279 agents, 365 skills, and 280 commands from 10 sources.
 | **Refactor** | `ecc-refactor-cleaner` |
 | **Architecture** | `ecc-architect` |
 | **UI/UX design** | `uiux-ui-ux-pro-max` or `uiux-design-system` |
+| **Draw.io diagram** (exportable) | `drawio-skill` |
+| **PlantUML diagram** (text-based) | `plantuml-skill` |
+| **PDF / DOCX / PPTX / XLSX** | `anthropic-pdf` / `anthropic-docx` / `anthropic-pptx` / `anthropic-xlsx` |
+| **Build an MCP server** | `anthropic-mcp-builder` |
+| **Webapp testing** | `anthropic-webapp-testing` |
+| **Business / marketing / finance** | `rez-business-*` / `rez-marketing-skill-*` / `rez-finance-*` |
+| **C-level strategy** | `rez-c-level-advisor-*` |
+| **Compliance / regulatory** | `rez-compliance-os-*` / `rez-ra-qm-team-*` |
 | **Multi-agent / enterprise** | `ruflo-sparc-coordinator` + `ruflo-swarm-orchestration` |
 | **"Did we build this before?"** | `mem-mem-search` |
 | **Document something** | `ecc-doc-updater` agent |

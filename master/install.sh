@@ -57,7 +57,7 @@ log "AI Powerhouse $VERSION"
 # See their READMEs for standalone usage.
 
 # Check all required submodules are initialized
-_required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill)
+_required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill drawio-skill plantuml-skill anthropics-skills alirezarezvani-claude-skills)
 if ! $NO_RUFLO; then
   _required_subs+=(ruflo)
 fi
@@ -201,25 +201,27 @@ for f in "$REPO_ROOT/get-shit-done/agents/"*.md; do
 done
 
 # ruflo (nested dirs — flatten, prefix category on duplicate basenames)
-if ! $NO_RUFLO && [[ -d "$REPO_ROOT/ruflo/plugin/agents/" ]]; then
+# ruflo v3.7+ moved agents/skills/commands from ruflo/plugin/ → ruflo/plugins/ (plural).
+# We walk ruflo/plugins/ recursively and use the top-level plugin name as the category.
+if ! $NO_RUFLO && [[ -d "$REPO_ROOT/ruflo/plugins/" ]]; then
   declare -A _ruflo_seen
   while IFS= read -r f; do
     [[ -f "$f" ]] || continue
     base=$(basename "$f" .md)
-    rel="${f#$REPO_ROOT/ruflo/plugin/agents/}"
+    rel="${f#$REPO_ROOT/ruflo/plugins/}"
     category=$(dirname "$rel" | sed 's|/|-|g')
     if [[ -n "${_ruflo_seen[$base]+x}" ]]; then
       link "$f" "$CLAUDE_DIR/agents/ruflo-${category}-${base}.md"
       prev_rel="${_ruflo_seen[$base]}"
       prev_cat=$(dirname "$prev_rel" | sed 's|/|-|g')
       rm -f "$CLAUDE_DIR/agents/ruflo-${base}.md"
-      link "$REPO_ROOT/ruflo/plugin/agents/${prev_rel}" \
+      link "$REPO_ROOT/ruflo/plugins/${prev_rel}" \
            "$CLAUDE_DIR/agents/ruflo-${prev_cat}-${base}.md"
     else
       _ruflo_seen[$base]="$rel"
       link "$f" "$CLAUDE_DIR/agents/ruflo-${base}.md"
     fi
-  done < <(find "$REPO_ROOT/ruflo/plugin/agents/" -name "*.md" 2>/dev/null | sort)
+  done < <(find "$REPO_ROOT/ruflo/plugins/" -path "*/agents/*" -name "*.md" 2>/dev/null | sort)
   unset _ruflo_seen
 fi
 
@@ -271,12 +273,12 @@ for d in "$REPO_ROOT/ui-ux-pro-max-skill/.claude/skills/"/*/; do
   link "$d" "$CLAUDE_DIR/skills/uiux-$(basename "$d")"
 done
 
-# ruflo
+# ruflo (skills live in ruflo/plugins/*/skills/*/ in v3.7+)
 if ! $NO_RUFLO; then
-  for d in "$REPO_ROOT/ruflo/plugin/skills/"/*/; do
+  while IFS= read -r d; do
     [[ -d "$d" ]] || continue
     link "$d" "$CLAUDE_DIR/skills/ruflo-$(basename "$d")"
-  done
+  done < <(find "$REPO_ROOT/ruflo/plugins/" -mindepth 3 -maxdepth 3 -type d -path "*/skills/*" 2>/dev/null | sort)
 fi
 
 # master (local skills: agent-routing etc.)
@@ -300,6 +302,44 @@ for d in "$REPO_ROOT/super-claude/plugins/superclaude/skills/"/*/; do
   [[ -d "$d" ]] || continue
   link "$d" "$CLAUDE_DIR/skills/sc-$(basename "$d")"
 done
+
+# drawio-skill (single skill — symlink as-is, no prefix)
+if [[ -d "$REPO_ROOT/drawio-skill/skills/drawio-skill" ]]; then
+  link "$REPO_ROOT/drawio-skill/skills/drawio-skill" "$CLAUDE_DIR/skills/drawio-skill"
+fi
+
+# plantuml-skill (single skill — symlink as-is, no prefix)
+if [[ -d "$REPO_ROOT/plantuml-skill/skills/plantuml-skill" ]]; then
+  link "$REPO_ROOT/plantuml-skill/skills/plantuml-skill" "$CLAUDE_DIR/skills/plantuml-skill"
+fi
+
+# anthropics/skills — official Anthropic skill library (17 skills: pdf, docx, pptx, xlsx,
+# mcp-builder, webapp-testing, frontend-design, brand-guidelines, theme-factory, etc.)
+if [[ -d "$REPO_ROOT/anthropics-skills/skills" ]]; then
+  for d in "$REPO_ROOT/anthropics-skills/skills/"*/; do
+    [[ -d "$d" ]] || continue
+    link "$d" "$CLAUDE_DIR/skills/anthropic-$(basename "$d")"
+  done
+fi
+
+# alirezarezvani/claude-skills — install only non-engineering business domains to
+# avoid overlap with wshobson-agents (which covers engineering) and super-claude
+# (which covers commands). Domains kept: business-growth, business-operations,
+# c-level-advisor, commercial, compliance-os, finance, marketing-skill, product-team,
+# project-management, ra-qm-team, research-ops.
+# Domains deliberately skipped: engineering, engineering-team (overlap with
+# wshobson-agents), marketing (plugin-style, no skills/), productivity (plugin-style).
+if [[ -d "$REPO_ROOT/alirezarezvani-claude-skills" ]]; then
+  for domain in business-growth business-operations c-level-advisor commercial compliance-os \
+                finance marketing-skill product-team project-management \
+                ra-qm-team research-ops; do
+    [[ -d "$REPO_ROOT/alirezarezvani-claude-skills/$domain/skills" ]] || continue
+    while IFS= read -r d; do
+      [[ -d "$d" ]] || continue
+      link "$d" "$CLAUDE_DIR/skills/rez-${domain}-$(basename "$d")"
+    done < <(find "$REPO_ROOT/alirezarezvani-claude-skills/$domain/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+  done
+fi
 
 log "Skills installed."
 
@@ -331,12 +371,14 @@ while IFS= read -r f; do
   fi
 done < <(find "$REPO_ROOT/get-shit-done/commands/" -name "*.md" 2>/dev/null | sort)
 
-# ruflo (top-level entry points only)
+# ruflo (commands live in ruflo/plugins/*/commands/ in v3.7+)
 if ! $NO_RUFLO; then
-  for f in "$REPO_ROOT/ruflo/plugin/commands/"*.md; do
+  while IFS= read -r f; do
     [[ -f "$f" ]] || continue
-    link "$f" "$CLAUDE_DIR/commands/ruflo-$(basename "$f")"
-  done
+    base=$(basename "$f")
+    plugin=$(basename "$(dirname "$(dirname "$f")")")
+    link "$f" "$CLAUDE_DIR/commands/ruflo-${plugin}-${base}"
+  done < <(find "$REPO_ROOT/ruflo/plugins/" -path "*/commands/*" -name "*.md" 2>/dev/null | sort)
 fi
 
 # wshobson-agents commands
@@ -422,9 +464,15 @@ if ! $DRY_RUN && command -v bun &>/dev/null; then
     || warn "claude-mem setup failed — memory hooks may not work"
 fi
 
-# ruflo — use version-pinned copy (not @alpha); requires claude-flow MCP server
+# ruflo — use the upstream hooks file (newer than the local pinned copy in master/hooks/).
+# Requires claude-flow MCP server / npm package.
 if ! $NO_RUFLO; then
-  link "$SCRIPT_DIR/hooks/ruflo-hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
+  if [[ -f "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" ]]; then
+    link "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
+  elif [[ -f "$SCRIPT_DIR/hooks/ruflo-hooks.json" ]]; then
+    # Fallback to the version-pinned copy if the upstream file is missing
+    link "$SCRIPT_DIR/hooks/ruflo-hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
+  fi
 fi
 
 log "Hooks installed."
@@ -475,9 +523,11 @@ def count_dir(d, ext=None):
         return len([f for f in files if (not ext or f.endswith(ext))]) if files else 0
     except: return 0
 
-submodules = ['awesome-claude-code','autoresearch','claude-mem','claude-task-master',
-              'everything-claude-code','get-shit-done','pm-workspace','ruflo',
-              'super-claude','superpowers','ui-ux-pro-max-skill','wshobson-agents']
+submodules = ['alirezarezvani-claude-skills','anthropics-skills','awesome-claude-code',
+              'autoresearch','claude-mem','claude-task-master','drawio-skill',
+              'everything-claude-code','get-shit-done','plantuml-skill',
+              'pm-workspace','ruflo','super-claude','superpowers',
+              'ui-ux-pro-max-skill','wshobson-agents']
 
 manifest = {
     'version': os.environ.get('VERSION','dev'),
@@ -518,8 +568,9 @@ if ! $DRY_RUN; then
     echo "  Re-run with --full to add Python/Go/Rust/etc. rules (~15-20K more tokens)"
   fi
   if $NO_RUFLO; then
-    echo "  (ruflo not included — use --with-ruflo to add 76 enterprise agents/skills)"
+    echo "  (ruflo not included — use --with-ruflo to add ruflo enterprise agents/skills)"
   fi
+  echo "  (drawio-skill + plantuml-skill + anthropics official skills always installed; alirezarezvani non-engineering domains too)"
   echo ""
   echo "Restart Claude Code to pick up all new tools."
 fi
