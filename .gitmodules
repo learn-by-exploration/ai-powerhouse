@@ -46,3 +46,11 @@
 	path = autoresearch
 	url = https://github.com/karpathy/autoresearch.git
 	branch = master
+[submodule "drawio-skill"]
+	path = drawio-skill
+	url = https://github.com/Agents365-ai/drawio-skill.git
+	branch = main
+[submodule "plantuml-skill"]
+	path = plantuml-skill
+	url = https://github.com/Agents365-ai/plantuml-skill.git
+	branch = main
