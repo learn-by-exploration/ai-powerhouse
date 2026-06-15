@@ -312,7 +312,7 @@ Token figures are approximate, measured with Claude's tokenizer as of April 2026
 |--------|--------|--------|----------|-------|
 | everything-claude-code | 64 | 262 | 84 | Core ECC framework (v2.0) |
 | anthropics-skills | — | 17 | — | Official Anthropic skills: PDF/DOCX/PPTX/XLSX, mcp-builder, webapp-testing |
-| wshobson-agents | 192 | 136 | 102 | Domain-specialized plugins |
+| wshobson-agents | 192 | 156 | 102 | Domain-specialized plugins |
 | superpowers | — | 14 | — | Spec-to-code workflow |
 | get-shit-done | 33 | — | 67 | Context engineering + spec dev |
 | super-claude | 20 | 6 | 30 | Behavioral modes framework |
@@ -320,12 +320,13 @@ Token figures are approximate, measured with Claude's tokenizer as of April 2026
 | ui-ux-pro-max | — | 7 | — | UI/UX design intelligence |
 | drawio-skill | — | 1 | — | Draw.io diagram generation (always installed) |
 | plantuml-skill | — | 1 | — | PlantUML via Kroki API (always installed) |
-| alirezarezvani-skills | — | 158 | — | Business skills: marketing, finance, C-level, compliance, PM (non-engineering subset) |
+| alirezarezvani-skills | — | 154 | — | Business skills: marketing, finance, C-level, compliance, PM (non-engineering subset) |
+| ponytail | — | 4 | — | "Lazy mode" — YAGNI / stdlib-first / one-line reflex (skills only; full features need marketplace install) |
 | ruflo _(--with-ruflo only)_ | 55 | 110 | 48 | Enterprise multi-agent |
 | claude-task-master | — | — | 1 | AI task management |
-| master | — | 1 | — | Agent routing skill |
-| **Total (default)** | **~309** | **~619** | **~284** | Ruflo excluded |
-| **Total (--with-ruflo)** | **~364** | **~729** | **~332** | Full collection |
+| master | 1 | 2 | — | Agent routing skill + SE lifecycle orchestrator |
+| **Total (default)** | **~310** | **~640** | **~284** | Ruflo excluded |
+| **Total (--with-ruflo)** | **~365** | **~750** | **~332** | Full collection |
 
 All tools are prefixed by source — zero name collisions:
 `ecc-` · `ws-` · `superpowers-` · `gsd-` · `sc-` · `mem-` · `uiux-` · `ruflo-` · `ctm-` · `anthropic-` · `rez-` · `drawio-skill` · `plantuml-skill`

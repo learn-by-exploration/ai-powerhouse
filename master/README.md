@@ -61,12 +61,13 @@ Restart Claude Code after installing.
 | ui-ux-pro-max | — | 7 | — |
 | drawio-skill | — | 1 | — |
 | plantuml-skill | — | 1 | — |
-| wshobson-agents | 192 | 136 | 102 |
+| wshobson-agents | 192 | 156 | 102 |
 | super-claude | 20 | 6 | 30 |
 | claude-task-master | — | — | 1 |
+| ponytail | — | 4 | — |
 | ruflo _(--no-ruflo skips)_ | 55 | 110 | 48 |
 | master | 1 | 2 | — |
-| **Total (with ruflo)** | **~364** | **~554** | **~332** |
+| **Total (with ruflo)** | **~365** | **~750** | **~332** |
 
 ---
 
@@ -88,3 +89,4 @@ Restart Claude Code after installing.
 |---|---|
 | **ISO/IEC/IEEE 15288** | System life cycle processes — the spine of `master-se-lifecycle` skill and `master-se-systems-engineer` agent. See `docs/se-15288.md` for the full reference and the mapping table from each 15288 Technical process to the Powerhouse tool that implements it. |
 | **OKF (Open Knowledge Format v0.1)** | Markdown + YAML frontmatter format for agent-readable knowledge bundles. Vendored at `docs/okf-spec.md`. Use when organizing the harness's own knowledge corpus. |
+| **Ponytail "lazy mode"** | The YAGNI / stdlib-first / one-line-over-fifty reflex — enforced via 4 skills (`ponytail-ponytail`, `ponytail-ponytail-review`, `ponytail-ponytail-audit`, `ponytail-ponytail-help`). For the full feature set including the `/ponytail` slash commands and lifecycle hooks, also run `/plugin marketplace add DietrichGebert/ponytail`. |

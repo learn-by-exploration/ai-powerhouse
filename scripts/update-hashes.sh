@@ -11,10 +11,10 @@ import json, subprocess, datetime, os
 repo = os.environ['REPO_ROOT']
 lock_file = os.path.join(repo, 'submodule-hashes.lock')
 
-submodules = ['autoresearch','awesome-claude-code','claude-mem','claude-task-master',
-              'drawio-skill','everything-claude-code','get-shit-done','plantuml-skill',
-              'pm-workspace','ruflo','super-claude','superpowers',
-              'ui-ux-pro-max-skill','wshobson-agents']
+submodules = ['alirezarezvani-claude-skills','anthropics-skills','autoresearch','awesome-claude-code',
+              'claude-mem','claude-task-master','drawio-skill','everything-claude-code',
+              'get-shit-done','plantuml-skill','pm-workspace','ponytail','ruflo',
+              'super-claude','superpowers','ui-ux-pro-max-skill','wshobson-agents']
 
 hashes = {}
 for m in submodules:

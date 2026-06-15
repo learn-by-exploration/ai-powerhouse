@@ -60,3 +60,6 @@
 [submodule "alirezarezvani-claude-skills"]
 	path = alirezarezvani-claude-skills
 	url = https://github.com/alirezarezvani/claude-skills.git
+[submodule "ponytail"]
+	path = ponytail
+	url = https://github.com/DietrichGebert/ponytail.git

@@ -35,7 +35,7 @@ log() { echo "[uninstall] $*"; }
 MANIFEST="$CLAUDE_DIR/POWERHOUSE_MANIFEST.json"
 if [[ ! -f "$MANIFEST" ]]; then
   log "No installation found at $CLAUDE_DIR (manifest missing)."
-  log "If you installed manually, remove files with prefix: ecc- gsd- superpowers- ruflo- mem- uiux- master- ws- sc- ctm- drawio-skill plantuml-skill"
+  log "If you installed manually, remove files with prefix: ecc- gsd- superpowers- ruflo- mem- uiux- master- ws- sc- ctm- drawio-skill plantuml-skill ponytail-"
   exit 0
 fi
 
@@ -51,7 +51,7 @@ _remove() {
   fi
 }
 
-for prefix in ecc- superpowers- gsd- mem- ruflo- uiux- master- ws- sc- ctm-; do
+for prefix in ecc- superpowers- gsd- mem- ruflo- uiux- master- ws- sc- ctm- ponytail-; do
   # agents (files)
   for f in "$CLAUDE_DIR/agents/${prefix}"*.md; do
     [[ -e "$f" ]] || continue

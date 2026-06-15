@@ -57,7 +57,7 @@ log "AI Powerhouse $VERSION"
 # See their READMEs for standalone usage.
 
 # Check all required submodules are initialized
-_required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill drawio-skill plantuml-skill anthropics-skills alirezarezvani-claude-skills)
+_required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill drawio-skill plantuml-skill anthropics-skills alirezarezvani-claude-skills ponytail)
 if ! $NO_RUFLO; then
   _required_subs+=(ruflo)
 fi
@@ -350,6 +350,17 @@ if [[ -d "$REPO_ROOT/alirezarezvani-claude-skills" ]]; then
   done
 fi
 
+# ponytail (lazy-mode plugin) — install only the 4 skills (which work via symlink).
+# The TOML commands and the ${CLAUDE_PLUGIN_ROOT}-relative hooks require the
+# official marketplace install (`/plugin marketplace add DietrichGebert/ponytail`)
+# to function; symlinks would break them. For full features, run that separately.
+if [[ -d "$REPO_ROOT/ponytail/skills" ]]; then
+  for d in "$REPO_ROOT/ponytail/skills/"*/; do
+    [[ -d "$d" ]] || continue
+    link "$d" "$CLAUDE_DIR/skills/ponytail-$(basename "$d")"
+  done
+fi
+
 log "Skills installed."
 
 # ── COMMANDS ─────────────────────────────────────────────────────────────────
@@ -534,7 +545,7 @@ def count_dir(d, ext=None):
 
 submodules = ['alirezarezvani-claude-skills','anthropics-skills','awesome-claude-code',
               'autoresearch','claude-mem','claude-task-master','drawio-skill',
-              'everything-claude-code','get-shit-done','plantuml-skill',
+              'everything-claude-code','get-shit-done','plantuml-skill','ponytail',
               'pm-workspace','ruflo','super-claude','superpowers',
               'ui-ux-pro-max-skill','wshobson-agents']
 

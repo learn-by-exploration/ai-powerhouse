@@ -1,6 +1,6 @@
 # AI Powerhouse — Master Configuration
 
-You have access to 309 agents, 619 skills, and 284 commands from 16 sources (default install; add `--with-ruflo` for 364 agents / 749 skills / 332 commands).
+You have access to 310 agents, 640 skills, and 284 commands from 17 sources (default install; add `--with-ruflo` for 365 agents / 750 skills / 332 commands).
 **First, invoke the `master-agent-routing` skill to select the right tool for your task.**
 
 ---
@@ -27,6 +27,7 @@ You have access to 309 agents, 619 skills, and 284 commands from 16 sources (def
 | **Compliance / regulatory** | `rez-compliance-os-*` / `rez-ra-qm-team-*` |
 | **Multi-agent / enterprise** | `ruflo-sparc-coordinator` + `ruflo-swarm-orchestration` |
 | **Systems engineering lifecycle** (ISO 15288) | `se-lifecycle` skill (route) → `se-systems-engineer` agent (walk through) |
+| **Over-engineering review** (YAGNI / lazy mode) | `ponytail-ponytail` (lazy mode), `ponytail-ponytail-review` (review), `ponytail-ponytail-audit` (code-to-delete audit) |
 | **"Did we build this before?"** | `mem-mem-search` |
 | **Document something** | `ecc-doc-updater` agent |
 | **Onboard to a new codebase** | `mem-smart-explore` → `ecc-architect` → `gsd-codebase-mapper` |

@@ -41,7 +41,7 @@ git submodule update --init --recursive
 bash master/install.sh
 ```
 
-This symlinks ~309 agents, ~619 skills, ~284 commands, and hooks into `~/.claude`. Restart Claude Code after.
+This symlinks ~310 agents, ~640 skills, ~284 commands, and hooks into `~/.claude`. Restart Claude Code after.
 
 **Preview before installing:**
 ```bash
@@ -84,16 +84,17 @@ bash master/install.sh --full
 | ui-ux-pro-max | — | 7 | — | UI/UX design |
 | drawio-skill | — | 1 | — | Draw.io diagram generation (always installed) |
 | plantuml-skill | — | 1 | — | PlantUML via Kroki (always installed) |
-| alirezarezvani-skills | — | 158 | — | Business skills: marketing, finance, C-level, compliance, PM (non-engineering subset) |
+| alirezarezvani-skills | — | 154 | — | Business skills: marketing, finance, C-level, compliance, PM (non-engineering subset) |
+| ponytail | — | 4 | — | "Lazy mode" — YAGNI / stdlib-first (skills only via symlink) |
 | ruflo _(optional)_ | 55 | 110 | 48 | Enterprise multi-agent |
-| wshobson-agents | 192 | 136 | 102 | 77-plugin agent+skill collection |
+| wshobson-agents | 192 | 156 | 102 | 77-plugin agent+skill collection |
 | super-claude | 20 | 6 | 30 | Behavioral modes + MCP orchestration |
 | claude-task-master | — | — | 1 | AI task management commands |
-| master | — | 1 | — | Agent routing skill |
-| **Total (default)** | **~309** | **~619** | **~284** | Recommended for most |
-| **Total (--with-ruflo)** | **~364** | **~729** | **~332** | Enterprise/team setups |
+| master | 1 | 2 | — | Agent routing + SE lifecycle orchestrator |
+| **Total (default)** | **~310** | **~640** | **~284** | Recommended for most |
+| **Total (--with-ruflo)** | **~365** | **~750** | **~332** | Enterprise/team setups |
 
-All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`, `anthropic-`, `rez-`, `drawio-skill`, `plantuml-skill`) so they never collide.
+All tools are prefixed by source (`ecc-`, `superpowers-`, `gsd-`, `mem-`, `uiux-`, `ruflo-`, `ws-`, `sc-`, `ctm-`, `anthropic-`, `rez-`, `ponytail-`, `drawio-skill`, `plantuml-skill`) so they never collide.
 
 **Reference-only submodules** (browsable but not installed):
 - `awesome-claude-code` — curated community list
