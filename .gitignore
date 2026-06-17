@@ -1,0 +1,12 @@
+# Local dev state — never commit
+.vscode/
+.claude/settings.local.json
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Worktrees and scratch
+.worktrees/
+scratch/
+.tmp/
