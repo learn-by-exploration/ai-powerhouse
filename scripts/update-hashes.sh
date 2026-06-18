@@ -6,15 +6,13 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 REPO_ROOT="$REPO_ROOT" python3 - <<'PYEOF'
-import json, subprocess, datetime, os
+import json, subprocess, datetime, os, re
 
 repo = os.environ['REPO_ROOT']
 lock_file = os.path.join(repo, 'submodule-hashes.lock')
 
-submodules = ['alirezarezvani-claude-skills','anthropics-skills','autoresearch','awesome-claude-code',
-              'claude-mem','claude-task-master','drawio-skill','everything-claude-code',
-              'get-shit-done','plantuml-skill','pm-workspace','ponytail','ruflo',
-              'super-claude','superpowers','ui-ux-pro-max-skill','wshobson-agents']
+# Derive submodule names from .gitmodules — single source of truth
+submodules = sorted({m.group(1) for m in re.finditer(r'\[submodule "([^"]+)"\]', open(os.path.join(repo, '.gitmodules')).read())})
 
 hashes = {}
 for m in submodules:

@@ -29,6 +29,19 @@ You have access to 310 agents, 640 skills, and 284 commands from 17 sources (def
 | **Systems engineering lifecycle** (ISO 15288) | `se-lifecycle` skill (route) → `se-systems-engineer` agent (walk through) |
 | **Over-engineering review** (YAGNI / lazy mode) | `ponytail-ponytail` (lazy mode), `ponytail-ponytail-review` (review), `ponytail-ponytail-audit` (code-to-delete audit) |
 | **"Did we build this before?"** | `mem-mem-search` |
+| **Draw.io diagram** (exportable) | `drawio-skill` |
+| **PlantUML diagram** (text-based) | `plantuml-skill` |
+| **Document processing (PDF/DOCX/PPTX/XLSX)** | `anthropic-pdf` / `anthropic-docx` / `anthropic-pptx` / `anthropic-xlsx` |
+| **Build an MCP server** | `anthropic-mcp-builder` |
+| **Webapp testing (Playwright)** | `anthropic-webapp-testing` |
+| **Confidence scoring on output** | `sc-confidence-check` |
+| **Deep research w/ multi-hop reasoning** | `sc-researcher` |
+| **Document a project** | `ecc-doc-updater` agent |
+| **PR description** | `ruflo-pr-manager` (requires ruflo install) |
+| **DB migration** | `ecc-database-migrations` skill |
+| **Verify work before marking done** | `superpowers-verification-before-completion` |
+| **Audit your harness config for security** | `ecc-agentshield-scan` |
+| **Parallel agent teams** | `ws-agent-teams-team-lead`, `ws-agent-orchestration-context-manager` |
 | **Document something** | `ecc-doc-updater` agent |
 | **Onboard to a new codebase** | `mem-smart-explore` → `ecc-architect` → `gsd-codebase-mapper` |
 | **PR description** | `ruflo-pr-manager` |
@@ -77,8 +90,8 @@ Commits:        feat:/fix:/refactor: (conventional)
 This harness loads ~80K tokens at session start in minimal mode (~120K with `--full`).
 
 **To reduce token overhead:**
-- Default install is already minimal — use `bash master/install.sh` (no flags needed)
-- Exclude ruflo enterprise agents: `bash master/install.sh --no-ruflo` (saves ~40-60K)
+- Default install is already minimal and excludes ruflo — `bash master/install.sh` (no flags)
+- Opt **into** ruflo enterprise agents: `bash master/install.sh --with-ruflo` (adds ~40-60K tokens)
 - Check current usage: `/ecc-context-budget`
 - When context is high: `ecc-strategic-compact` skill, then delegate to subagents
 - For large codebases: `mem-smart-explore` (10-18x cheaper than reading files directly)

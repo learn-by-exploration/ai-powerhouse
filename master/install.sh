@@ -56,8 +56,13 @@ log "AI Powerhouse $VERSION"
 # - autoresearch (karpathy): pure Python nanochat training research; no Claude Code tooling
 # See their READMEs for standalone usage.
 
-# Check all required submodules are initialized
-_required_subs=(everything-claude-code superpowers get-shit-done claude-mem ui-ux-pro-max-skill drawio-skill plantuml-skill anthropics-skills alirezarezvani-claude-skills ponytail)
+# Check all installable submodules are initialized.
+# Reference-only submodules (autoresearch, awesome-claude-code, pm-workspace)
+# are NOT in this list — they ship as browse-only and have no install loop.
+_required_subs=(everything-claude-code superpowers get-shit-done claude-mem
+                ui-ux-pro-max-skill drawio-skill plantuml-skill
+                anthropics-skills alirezarezvani-claude-skills ponytail
+                claude-task-master super-claude wshobson-agents)
 if ! $NO_RUFLO; then
   _required_subs+=(ruflo)
 fi
@@ -281,6 +286,12 @@ if ! $NO_RUFLO; then
   done < <(find "$REPO_ROOT/ruflo/plugins/" -mindepth 3 -maxdepth 3 -type d -path "*/skills/*" 2>/dev/null | sort)
 fi
 
+# master/CLAUDE.md → ~/.claude/CLAUDE.md so the routing table is auto-loaded
+# at session start. Skipped silently if the user already has a real CLAUDE.md
+# (the link() helper only overwrites its own previous symlinks).
+log "Linking master/CLAUDE.md → $CLAUDE_DIR/CLAUDE.md"
+link "$SCRIPT_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
+
 # master (local skills: agent-routing, se-lifecycle, ...)
 if [[ -d "$SCRIPT_DIR/skills" ]]; then
   for d in "$SCRIPT_DIR/skills/"*/; do
@@ -484,15 +495,11 @@ if ! $DRY_RUN && command -v bun &>/dev/null; then
     || warn "claude-mem setup failed — memory hooks may not work"
 fi
 
-# ruflo — use the upstream hooks file (newer than the local pinned copy in master/hooks/).
-# Requires claude-flow MCP server / npm package.
-if ! $NO_RUFLO; then
-  if [[ -f "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" ]]; then
-    link "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
-  elif [[ -f "$SCRIPT_DIR/hooks/ruflo-hooks.json" ]]; then
-    # Fallback to the version-pinned copy if the upstream file is missing
-    link "$SCRIPT_DIR/hooks/ruflo-hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
-  fi
+# ruflo — use the upstream hooks file. Requires claude-flow MCP server / npm package.
+# (Previously had a fallback to a local pinned copy at master/hooks/ruflo-hooks.json;
+# removed — upstream is the source of truth and a stale pin is worse than no hook.)
+if ! $NO_RUFLO && [[ -f "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" ]]; then
+  link "$REPO_ROOT/ruflo/plugin/hooks/hooks.json" "$CLAUDE_DIR/hooks/ruflo-hooks.json"
 fi
 
 log "Hooks installed."
@@ -528,7 +535,7 @@ fi
 if ! $DRY_RUN; then
   REPO_ROOT="$REPO_ROOT" CLAUDE_DIR="$CLAUDE_DIR" VERSION="$VERSION" \
   LOCAL="$LOCAL" MINIMAL="$MINIMAL" NO_RUFLO="$NO_RUFLO" python3 - <<'PYEOF'
-import json, subprocess, datetime, os
+import json, subprocess, datetime, os, re
 
 repo      = os.environ['REPO_ROOT']
 claude_dir = os.environ['CLAUDE_DIR']
@@ -543,11 +550,7 @@ def count_dir(d, ext=None):
         return len([f for f in files if (not ext or f.endswith(ext))]) if files else 0
     except: return 0
 
-submodules = ['alirezarezvani-claude-skills','anthropics-skills','awesome-claude-code',
-              'autoresearch','claude-mem','claude-task-master','drawio-skill',
-              'everything-claude-code','get-shit-done','plantuml-skill','ponytail',
-              'pm-workspace','ruflo','super-claude','superpowers',
-              'ui-ux-pro-max-skill','wshobson-agents']
+submodules = sorted({m.group(1) for m in re.finditer(r'\[submodule "([^"]+)"\]', open(os.path.join(repo,'.gitmodules')).read())})
 
 manifest = {
     'version': os.environ.get('VERSION','dev'),

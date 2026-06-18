@@ -102,6 +102,13 @@ for skill in drawio-skill plantuml-skill; do
   fi
 done
 
+# Remove master/CLAUDE.md symlink (only if it's our symlink, never a real user file)
+if [[ -L "$CLAUDE_DIR/CLAUDE.md" ]] && \
+   [[ "$(readlink "$CLAUDE_DIR/CLAUDE.md")" == *"ai-powerhouse/master/CLAUDE.md" || \
+      "$(readlink "$CLAUDE_DIR/CLAUDE.md")" == *"/master/CLAUDE.md" ]]; then
+  _remove "claude.md symlink" "$CLAUDE_DIR/CLAUDE.md"
+fi
+
 # Remove manifest
 if $DRY_RUN; then
   echo "[dry-run] rm '$MANIFEST'"
