@@ -1,21 +1,21 @@
 {
   "_comment": "Pinned submodule commit hashes. Run scripts/verify-submodules.sh to validate.",
-  "_updated": "2026-06-18",
+  "_updated": "2026-06-23",
   "alirezarezvani-claude-skills": "4a3c05b69e64f4925f7fc65c88890f614f79caf0",
   "anthropics-skills": "57546260929473d4e0d1c1bb75297be2fdfa1949",
   "autoresearch": "228791fb499afffb54b46200aca536f79142f117",
   "awesome-claude-code": "614f102accbcd48206d63a21df64adc984026b40",
-  "claude-mem": "96ad0e23b4e1a3c976b2f836d2190626b55079f2",
+  "claude-mem": "87e4836a86909bbfd056777a37546db443f90868",
   "claude-task-master": "c0c98d367c55296bfe69e65680625b6db437af02",
-  "drawio-skill": "00ed825c4aec623a5838a16d1ad6b7a2c603dfa6",
-  "everything-claude-code": "5b173d2e6c11b976a0f13b2f59125e08956c1d47",
+  "drawio-skill": "765a95b14b9cbada518723b01c847cb2123772ba",
+  "everything-claude-code": "71d22d0a77b7e0684f4e51cba03749b788993cdb",
   "get-shit-done": "bdcaab2c752d9a33a1a1ca9acf3a3c81fb991815",
   "plantuml-skill": "07fe0ade1fc9a0a1e2ae8d64f95aa45cd8882284",
-  "pm-workspace": "89bbbda699f7bd4eb0eb2700ecc140d1cb477876",
-  "ponytail": "e01aa900f7e12e8a4660fb5d757ad016baeffed9",
+  "pm-workspace": "98f37d047883afc599a6ebd96542c1314c089eae",
+  "ponytail": "dedc97ca7c8a1e7463ac5b36f7fe4b28c3c435a2",
   "ruflo": "c5308381e2239ddc0c95153a867c54013a3d56c5",
   "super-claude": "226c45cc93b865108843a669c6545d421784b68c",
   "superpowers": "b62616fc12f6a007c6fd5118146821d748da0d33",
   "ui-ux-pro-max-skill": "b7e3af80f6e331f6fb456667b82b12cade7c9d35",
-  "wshobson-agents": "cc37bfdd292ce520ba1c44df7a3a70d5f8137236"
+  "wshobson-agents": "1c892847068d61e72af27e802ee032100a816426"
 }
