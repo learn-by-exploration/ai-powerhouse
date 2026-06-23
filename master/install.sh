@@ -445,6 +445,12 @@ if [[ -d "$REPO_ROOT/everything-claude-code/rules/common" ]]; then
   link "$REPO_ROOT/everything-claude-code/rules/common" "$CLAUDE_DIR/rules/ecc-common"
 fi
 
+# Parent-repo local rules (kept out of submodules so they survive
+# `git submodule update --remote`).
+if [[ -d "$REPO_ROOT/.claude/rules" ]]; then
+  link "$REPO_ROOT/.claude/rules" "$CLAUDE_DIR/rules/local-common"
+fi
+
 # Language-specific rules: only in full install (not --minimal, default is minimal)
 if ! $MINIMAL; then
   for d in "$REPO_ROOT/everything-claude-code/rules/"/*/; do
