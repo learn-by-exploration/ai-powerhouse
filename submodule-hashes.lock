@@ -8,7 +8,7 @@
   "claude-mem": "87e4836a86909bbfd056777a37546db443f90868",
   "claude-task-master": "c0c98d367c55296bfe69e65680625b6db437af02",
   "drawio-skill": "765a95b14b9cbada518723b01c847cb2123772ba",
-  "everything-claude-code": "96f61bab998117559957d084c04aff632350a6fa",
+  "everything-claude-code": "71d22d0a77b7e0684f4e51cba03749b788993cdb",
   "get-shit-done": "bdcaab2c752d9a33a1a1ca9acf3a3c81fb991815",
   "plantuml-skill": "07fe0ade1fc9a0a1e2ae8d64f95aa45cd8882284",
   "pm-workspace": "98f37d047883afc599a6ebd96542c1314c089eae",
@@ -17,5 +17,5 @@
   "super-claude": "226c45cc93b865108843a669c6545d421784b68c",
   "superpowers": "b62616fc12f6a007c6fd5118146821d748da0d33",
   "ui-ux-pro-max-skill": "b7e3af80f6e331f6fb456667b82b12cade7c9d35",
-  "wshobson-agents": "1c892847068d61e72af27e802ee032100a816426"
+  "wshobson-agents": "cc37bfdd292ce520ba1c44df7a3a70d5f8137236"
 }
