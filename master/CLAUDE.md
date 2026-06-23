@@ -99,3 +99,5 @@ This harness loads ~80K tokens at session start in minimal mode (~120K with `--f
 **MCP dependencies:** `mem-mem-search`, `mem-smart-explore`, and `mem-timeline-report` require
 the claude-mem MCP server entries in `~/.claude/settings.json`. If memory search returns nothing,
 verify the MCP server is registered and running (`bun run start` in `claude-mem/plugin/`).
+
+@RTK.md
